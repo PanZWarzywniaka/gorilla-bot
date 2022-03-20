@@ -22,6 +22,9 @@ def main():
         interval="5m")
 
     trader.download_data()
+    trader.start_database()
+    trader.save_data()
+
     trader.process_data()
     trader.calculate_profit()
     trader.make_charts()

@@ -1,9 +1,11 @@
+from datetime import datetime
 import yfinance as yf
 import pandas as pd
 import plotly.subplots as subplots
 import plotly.graph_objects as go
 import numpy as np
 import pandas_ta as ta
+from schema import db, Candlestick
 
 
 class Trader:
@@ -35,13 +37,13 @@ class Trader:
         if self.dollars == 0:
             return False
 
-        price_for_asset = self.candle_stick["Open"]
+        price_for_asset = self.candlestick["Open"]
         self.price_at_entry = price_for_asset
         self.asset = self.dollars/price_for_asset
         self.dollars = 0
 
         print(f"Bought asset  " +
-              f"Time: {self.candle_stick['Datetime']}")
+              f"Time: {self.candlestick['Datetime']}")
         return True
 
     def trade_result(self, exit_price):
@@ -51,10 +53,10 @@ class Trader:
         if self.asset == 0:
             return False
 
-        price_for_asset = self.candle_stick["Open"]
+        price_for_asset = self.candlestick["Open"]
 
         print(f"Selling asset " +
-              f"Time: {self.candle_stick['Datetime']}")
+              f"Time: {self.candlestick['Datetime']}")
         print(
             f"\nProfit on trade: {self.trade_result(price_for_asset)} % \n")
 
@@ -66,34 +68,34 @@ class Trader:
         return True
 
     def set_rsi_signal(self) -> bool:
-        c = self.candle_stick
+        c = self.candlestick
         if c['RSI_14'] < self.rsi_threshold:
             self.rsi_signal = True
 
     def buy_signal(self) -> bool:
-        c = self.candle_stick
+        c = self.candlestick
         ret = c['Crossover'] and c['Above'] and self.rsi_signal
         return ret
 
     def stop_loss_signal(self) -> bool:
         if self.price_at_entry is None:
             return False
-        c = self.candle_stick
+        c = self.candlestick
         return self.trade_result(c['Open']) <= -self.stop_loss_ratio
 
     def take_profit_signal(self) -> bool:
         if self.price_at_entry is None:
             return False
 
-        c = self.candle_stick
+        c = self.candlestick
         return self.trade_result(c['Open']) >= self.take_profit_ratio
 
     def calculate_profit(self):
 
         df = self.data.reset_index()
-        for _, candle_stick in df.iterrows():
+        for _, candlestick in df.iterrows():
 
-            self.candle_stick = candle_stick
+            self.candlestick = candlestick
 
             self.set_rsi_signal()
             # buy
@@ -105,8 +107,29 @@ class Trader:
                 self.sell_all()
 
         # end of time
-        self.candle_stick = df.iloc[-1]  # last candle stick
+        self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
+
+    def start_database(self):
+        db.connect()
+        db.create_tables([Candlestick])
+
+    def save_data(self):
+        df = self.data.reset_index()
+        print("Writing to database: ")
+        for index, candlestick in df.iterrows():
+            print(f"Writing to database: {index}")
+            c = candlestick
+            d = datetime.strftime(c['Datetime'], "%Y-%m-%d %H:%M:%S+%z")
+            Candlestick.create(
+                datetime=d,
+                open=float(c['Open']),
+                high=float(c['High']),
+                low=float(c['Low']),
+                close=float(c['Close']),
+                adj_close=float(c['Adj Close']),
+                volume=float(c['Volume'])
+            ).save()
 
     def download_data(self):
         print("Downloading...")
@@ -118,8 +141,8 @@ class Trader:
             # end="2022-03-13"
         )
         df.rename(columns={'Datetime': 'index'}, inplace=True)
-        print(df)
         self.data = df
+        print(df.columns)
 
     def process_data(self):
         df = self.data
