@@ -11,12 +11,21 @@ def main():
     # x = trader.request("GET", "/v2/account")
     # trader.print_json(x.json())
 
-    trader = Trader()
-    df = trader.download_data()
-    df = trader.prepare_data(df)
-    trader.calculate_profit(df)
-    trader.make_charts(df)
-    print(f"MONEY: {trader.dollars}")
+    trader = Trader(
+        dollars=100,
+        starting_asset=0,
+        stop_loss_ratio=1,  # as percent of entry money
+        take_profit_ratio=2,
+        rsi_threshold=30,
+        ticker="BTC-USD",
+        period="7d",
+        interval="5m")
+
+    trader.download_data()
+    trader.process_data()
+    trader.calculate_profit()
+    trader.make_charts()
+    print(f"MONEY: {trader.dollars} $$$")
 
 
 if __name__ == '__main__':

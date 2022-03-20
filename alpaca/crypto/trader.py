@@ -8,16 +8,27 @@ import pandas_ta as ta
 
 class Trader:
 
-    def __init__(self) -> None:
-        self.dollars = 100
-        self.asset = 0
+    def __init__(self,
+                 dollars=100,
+                 starting_asset=0,
+                 stop_loss_ratio=1,  # in persents
+                 take_profit_ratio=2,
+                 rsi_threshold=30,
+                 ticker="BTC-USD",
+                 period="7d",
+                 interval="5m") -> None:
+
+        self.dollars = dollars
+        self.asset = starting_asset
+        self.stop_loss_ratio = stop_loss_ratio
+        self.take_profit_ratio = take_profit_ratio
+        self.rsi_threshold = rsi_threshold
+        self.ticker = ticker
+        self.period = period
+        self.interval = interval
+
+        self.data = None
         self.price_at_entry = None
-        self.stop_loss_ratio = 0.990
-        self.take_profit_ratio = 1.02
-        self.rsi_threshold = 30
-        self.ticker = "BTC-USD"
-        self.period = "1mo"
-        self.interval = "5m"
         self.rsi_signal = False
 
     def buy_all(self) -> bool:
@@ -25,13 +36,16 @@ class Trader:
             return False
 
         price_for_asset = self.candle_stick["Open"]
+        self.price_at_entry = price_for_asset
         self.asset = self.dollars/price_for_asset
         self.dollars = 0
-        self.price_at_entry = price_for_asset
 
         print(f"Bought asset  " +
               f"Time: {self.candle_stick['Datetime']}")
         return True
+
+    def trade_result(self, exit_price):
+        return (exit_price/self.price_at_entry-1)*100
 
     def sell_all(self) -> bool:
         if self.asset == 0:
@@ -42,7 +56,7 @@ class Trader:
         print(f"Selling asset " +
               f"Time: {self.candle_stick['Datetime']}")
         print(
-            f"\nProfit on trade: {(price_for_asset/self.price_at_entry-1)*100} % \n")
+            f"\nProfit on trade: {self.trade_result(price_for_asset)} % \n")
 
         self.dollars = self.asset*price_for_asset
         self.asset = 0
@@ -65,17 +79,18 @@ class Trader:
         if self.price_at_entry is None:
             return False
         c = self.candle_stick
-        return c['Open'] / self.price_at_entry <= self.stop_loss_ratio
+        return self.trade_result(c['Open']) <= -self.stop_loss_ratio
 
     def take_profit_signal(self) -> bool:
         if self.price_at_entry is None:
             return False
 
         c = self.candle_stick
-        return c['Open'] / self.price_at_entry >= self.take_profit_ratio
+        return self.trade_result(c['Open']) >= self.take_profit_ratio
 
-    def calculate_profit(self, df):
-        df = df.reset_index()
+    def calculate_profit(self):
+
+        df = self.data.reset_index()
         for _, candle_stick in df.iterrows():
 
             self.candle_stick = candle_stick
@@ -90,10 +105,11 @@ class Trader:
                 self.sell_all()
 
         # end of time
-        last_candle_stick = df.iloc[-1]
+        self.candle_stick = df.iloc[-1]  # last candle stick
         self.sell_all()
 
     def download_data(self):
+        print("Downloading...")
         df = yf.download(
             tickers=self.ticker,
             period=self.period,
@@ -103,9 +119,10 @@ class Trader:
         )
         df.rename(columns={'Datetime': 'index'}, inplace=True)
         print(df)
-        return df
+        self.data = df
 
-    def prepare_data(self, df):
+    def process_data(self):
+        df = self.data
         df.ta.macd(close='close', fast=12, slow=26, signal=9, append=True)
         pd.set_option("display.max_columns", None)
 
@@ -114,9 +131,10 @@ class Trader:
         df['Crossover'] = df['Above'].diff()
 
         df.ta.rsi(close='Close', append=True)
-        return df
+        self.data = df
 
-    def make_charts(self, df):
+    def make_charts(self):
+        df = self.data
         # Construct a 2 x 1 Plotly figure
         fig = subplots.make_subplots(rows=3, cols=1)
         # price Line
