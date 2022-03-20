@@ -23,7 +23,7 @@ def main():
 
     trader.download_data()
     trader.start_database()
-    trader.save_data()
+    # trader.save_data()
 
     trader.process_data()
     trader.calculate_profit()

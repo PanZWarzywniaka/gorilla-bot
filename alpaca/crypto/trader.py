@@ -146,7 +146,8 @@ class Trader:
 
     def process_data(self):
         df = self.data
-        df.ta.macd(close='close', fast=12, slow=26, signal=9, append=True)
+        df.ta.macd(close='close', fast=12,
+                   slow=26, signal=9, append=True)
         pd.set_option("display.max_columns", None)
 
         # pomarańczowe nad czarne
