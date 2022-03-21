@@ -17,16 +17,20 @@ def main():
         stop_loss_ratio=1,  # as percent of entry money
         take_profit_ratio=2,
         rsi_threshold=30,
+        rsi_length=14,
         ticker="BTC-USD",
         period="7d",
         interval="5m")
 
     trader.download_data()
-    trader.start_database()
+    # trader.start_database()
     # trader.save_data()
 
     trader.process_data()
     trader.calculate_profit()
+    # df = trader.data
+    # df = df.loc[df['Action'] != 0]
+    # print(df)
     trader.make_charts()
     print(f"MONEY: {trader.dollars} $$$")
 

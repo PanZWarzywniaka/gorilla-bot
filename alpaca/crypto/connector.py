@@ -30,9 +30,6 @@ class Connector:
 
         return None
 
-    def print_json(self, raw_json):
-        print(json.dumps(raw_json, indent=4))
-
     def print_delay(self, timestamp):
 
         now = time.time()
