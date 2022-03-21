@@ -1,109 +1,124 @@
 import plotly.subplots as subplots
 import plotly.graph_objects as go
+import plotly.io as pio
 import numpy as np
 
 
 class Visualizer:
 
-    def __init__(self, df, rsi_threshold) -> None:
-
-        # Construct a 2 x 1 Plotly figure
-        fig = subplots.make_subplots(rows=3, cols=1, shared_xaxes=True)
-        # price Line
-
-        # signals
-        for row in range(3):  # 00FF00 green #FF0000 red
-            for index, signal_cs in df.loc[df['Action'] != 0].iterrows():
-                fig.add_vline(x=index,
-                              line_color="green", row=row+1, col=1)
-            # fig.append_trace(
-            #     go.Scatter(
-            #         x=df.index,
-            #         y=df[f'RSI_{self.rsi_length}'],
-            #         line=dict(color='#52307c', width=2),
-            #         name='RSI',
-            #         # showlegend=False,
-            #         legendgroup='rsi',
-            #     ), row=row, col=1
-            # )
-
-        fig.append_trace(
+    def __price_line(self, row, col):
+        # Open price Line
+        self.fig.append_trace(
             go.Scatter(
-                x=df.index,
-                y=df['Open'],
+                x=self.df.index,
+                y=self.df['Open'],
                 line=dict(color='#ff9900', width=1),
                 name='Open',
                 # showlegend=False,
                 legendgroup='1',
-            ), row=1, col=1
+            ), row=row, col=col
         )
+
+    def __candlesticks(self, row, col):
         # Candlestick chart for pricing
-        fig.append_trace(
+        self.fig.append_trace(
             go.Candlestick(
-                x=df.index,
-                open=df['Open'],
-                high=df['High'],
-                low=df['Low'],
-                close=df['Close'],
+                x=self.df.index,
+                open=self.df['Open'],
+                high=self.df['High'],
+                low=self.df['Low'],
+                close=self.df['Close'],
                 increasing_line_color='#ff9900',
                 decreasing_line_color='black',
                 showlegend=False
-            ), row=1, col=1
+            ), row=row, col=col
         )
-        # Fast Signal (%k) uzywany pomarańczowy
-        fig.append_trace(
+
+    def __prices_chart(self, row, col):
+        self.__price_line(row, col)
+        self.__candlesticks(row, col)
+
+    def __init__(self, df, rsi_threshold) -> None:
+        self.df = df
+        # Construct a 2 x 1 Plotly self.figure
+        self.fig = subplots.make_subplots(
+            rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.005)
+
+        # 1st chart
+        self.__prices_chart(1, 1)
+        # signals
+
+        for index, signal_cs in self.df.loc[self.df['Action'] == 2].iterrows():
+            self.fig.add_vline(x=index,
+                               line_color="green", row=1, col=1)
+        for index, signal_cs in self.df.loc[self.df['Action'] == 3].iterrows():
+            self.fig.add_vline(x=index,
+                               line_color="red", row=1, col=1)
+
+        # 1st Chart
+
+        # 2nd Chart
+        # Fast Signal (%k) #orange
+        self.fig.append_trace(
             go.Scatter(
-                x=df.index,
-                y=df['MACD_12_26_9'],
+                x=self.df.index,
+                y=self.df['MACD_12_26_9'],
                 line=dict(color='#ff9900', width=2),
                 name='MACD',
                 # showlegend=False,
                 legendgroup='2',
             ), row=2, col=1
         )
-        # Slow signal (%d) uzywany czarny
-        fig.append_trace(
+
+        # Slow signal (%d) #black
+        self.fig.append_trace(
             go.Scatter(
-                x=df.index,
-                y=df['MACDs_12_26_9'],
+                x=self.df.index,
+                y=self.df['MACDs_12_26_9'],
                 line=dict(color='#000000', width=2),
                 # showlegend=False,
                 legendgroup='2',
                 name='signal'
             ), row=2, col=1
         )
-        # Rsi
-        fig.append_trace(
+
+        # Colorize the histogram values
+        colors = np.where(self.df['MACDh_12_26_9'] < 0, '#000', '#ff9900')
+        # Plot the histogram
+        self.fig.append_trace(
+            go.Bar(
+                x=self.df.index,
+                y=self.df['MACDh_12_26_9'],
+                name='histogram',
+                marker_color=colors,
+            ), row=2, col=1
+        )
+
+        # 3rd chart
+        # RSI LINE
+        self.fig.append_trace(
             go.Scatter(
-                x=df.index,
-                y=df['RSI'],
+                x=self.df.index,
+                y=self.df['RSI'],
                 line=dict(color='#52307c', width=2),
                 name='RSI',
                 # showlegend=False,
                 legendgroup='rsi',
             ), row=3, col=1
         )
-        fig.append_trace(
+
+        # RSI treshold
+        self.fig.append_trace(
             go.Scatter(
-                x=df.index,
-                y=np.repeat(rsi_threshold, df.shape[0]),
+                x=self.df.index,
+                y=np.repeat(rsi_threshold, self.df.shape[0]),
                 line=dict(color='#5230ff', width=2),
                 name='RSI_threshold',
                 # showlegend=False,
                 legendgroup='rsi',
             ), row=3, col=1
         )
-        # Colorize the histogram values
-        colors = np.where(df['MACDh_12_26_9'] < 0, '#000', '#ff9900')
-        # Plot the histogram
-        fig.append_trace(
-            go.Bar(
-                x=df.index,
-                y=df['MACDh_12_26_9'],
-                name='histogram',
-                marker_color=colors,
-            ), row=2, col=1
-        )
+
         # Make it pretty
         layout = go.Layout(
             plot_bgcolor='#efefef',
@@ -118,5 +133,6 @@ class Visualizer:
             )
         )
         # Update options and show plot
-        fig.update_layout(layout)
-        fig.show()
+        self.fig.update_layout(layout)
+        pio.renderers.default = 'browser'
+        pio.show(self.fig)
