@@ -14,8 +14,11 @@ def main():
     trader = Trader(
         dollars=100,
         starting_asset=0,
-        stop_loss_ratio=1,  # as percent of entry money
+
+        # as percent of entry money
         take_profit_ratio=2,
+        stop_loss_ratio=1,
+
         rsi_threshold=30,
         rsi_length=14,
         ticker="BTC-USD",
