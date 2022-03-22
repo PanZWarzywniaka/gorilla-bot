@@ -16,8 +16,8 @@ class Trader:
     def __init__(self,
                  dollars=100,
                  starting_asset=0,
-                 stop_loss_ratio=1,  # in persents
                  take_profit_ratio=2,
+                 stop_loss_ratio=1,
                  rsi_threshold=30,
                  rsi_length=14,
                  ticker="BTC-USD",
@@ -26,8 +26,8 @@ class Trader:
 
         self.dollars = dollars
         self.asset = starting_asset
-        self.stop_loss_ratio = stop_loss_ratio
         self.take_profit_ratio = take_profit_ratio
+        self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
         self.rsi_length = rsi_length
         self.ticker = ticker
@@ -79,7 +79,7 @@ class Trader:
 
     def buy_signal(self) -> bool:
         c = self.candlestick
-        ret = c['Crossover'] and c['Above'] and self.rsi_signal
+        ret = c['MACD_crossover'] and c['MACD_above'] and self.rsi_signal
         return ret
 
     def stop_loss_signal(self) -> bool:
@@ -106,20 +106,23 @@ class Trader:
             # rsi signal
             if self.check_rsi_signal():
                 self.rsi_signal = True
-                self.data.at[c['Datetime'], 'Action'] = 1
+                self.data.at[c['Datetime'], 'action_observed'] = 1
             # buy
             if self.buy_signal():
                 self.buy_all()
-                self.data.at[c['Datetime'], 'Action'] = 2
+                self.data.at[c['Datetime'], 'action_observed'] = 2
 
             # sell
             if self.stop_loss_signal() or self.take_profit_signal():
                 self.sell_all()
-                self.data.at[c['Datetime'], 'Action'] = 3
+                self.data.at[c['Datetime'], 'action_observed'] = 3
 
         # end of time
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
+
+    def __set_signal():
+        pass
 
     def print_json(self, raw_json):
         print(json.dumps(raw_json, indent=4))
@@ -164,23 +167,34 @@ class Trader:
         self.data.rename(
             columns={f'RSI_{self.rsi_length}': 'RSI'}, inplace=True)
 
+    def __calculate_macd(self):
+        fast = 12
+        slow = 26
+        signal = 9
+
+        self.data.ta.macd(close='close', fast=fast,
+                          slow=slow, signal=signal, append=True)
+
+        self.data.rename(
+            columns={
+                f'MACD_{fast}_{slow}_{signal}': 'MACD_fast',
+                f'MACDs_{fast}_{slow}_{signal}': 'MACD_slow',
+                f'MACDh_{fast}_{slow}_{signal}': 'MACD_hist',
+
+            }, inplace=True)
+
+        self.data['MACD_above'] = self.data['MACD_fast'] >= self.data['MACD_slow']
+        self.data['MACD_crossover'] = self.data['MACD_above'].diff()
+
+        self.data['action_observed'] = 0
+
     def process_data(self):
-        # df.rename(columns={'Datetime': 'index'}, inplace=True)
-        df = self.data
-        df.ta.macd(close='close', fast=12,
-                   slow=26, signal=9, append=True)
-        pd.set_option("display.max_columns", None)
 
-        # pomarańczowe nad czarne
-        df['Above'] = df['MACD_12_26_9'] >= df['MACDs_12_26_9']
-        df['Crossover'] = df['Above'].diff()
-
-        df['Action'] = 0
-
-        self.data = df
         self.__calculate_rsi()
-        print(df.columns)
-        print(df)
+        self.__calculate_macd()
+        pd.set_option("display.max_columns", None)
+        print(self.data.columns)
+        print(self.data)
 
     def make_charts(self):
         Visualizer(self.data, self.rsi_threshold)

@@ -32,7 +32,7 @@ def main():
     trader.process_data()
     trader.calculate_profit()
     # df = trader.data
-    # df = df.loc[df['Action'] != 0]
+    # df = df.loc[df['action_observed'] != 0]
     # print(df)
     trader.make_charts()
     print(f"MONEY: {trader.dollars} $$$")

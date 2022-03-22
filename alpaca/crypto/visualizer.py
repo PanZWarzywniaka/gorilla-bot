@@ -6,19 +6,6 @@ import numpy as np
 
 class Visualizer:
 
-    def __price_line(self, row, col):
-        # Open price Line
-        self.fig.append_trace(
-            go.Scatter(
-                x=self.df.index,
-                y=self.df['Open'],
-                line=dict(color='#ff9900', width=1),
-                name='Open',
-                # showlegend=False,
-                legendgroup='1',
-            ), row=row, col=col
-        )
-
     def __candlesticks(self, row, col):
         # Candlestick chart for pricing
         self.fig.append_trace(
@@ -35,7 +22,7 @@ class Visualizer:
         )
 
     def __vertical_signal_lines(self, row, col, colour: str, action_code: int):
-        for index, _ in self.df.loc[self.df['Action'] == action_code].iterrows():
+        for index, _ in self.df.loc[self.df['action_observed'] == action_code].iterrows():
             self.fig.add_vline(x=index,
                                line_color=colour, row=row, col=col)
 
@@ -65,20 +52,20 @@ class Visualizer:
         )
 
     def __prices_chart(self, row, col):  # 1st
-        self.__price_line(row, col)
+        self.__scatter_line(row, col, '#ff9900', "Open")
         self.__candlesticks(row, col)
         self.__vertical_signal_lines(row, col, "green", 2)   # buy
         self.__vertical_signal_lines(row, col, "red", 3)     # sell
 
     def __macd_chart(self, row, col):  # 2nd
         # Fast Signal ( % k)  # orange
-        self.__scatter_line(row, col, '#ff9900', 'MACD_12_26_9')
+        self.__scatter_line(row, col, '#ff9900', 'MACD_fast')
 
         # Slow signal (%d) #black
-        self.__scatter_line(row, col, '#000000', 'MACDs_12_26_9')
+        self.__scatter_line(row, col, '#000000', 'MACD_slow')
 
         # Plot the histogram
-        self.__histogram(row, col, '#000', '#ff9900', 'MACDh_12_26_9')
+        self.__histogram(row, col, '#000', '#ff9900', 'MACD_hist')
 
     def __rsi_chart(self, row, col):
 
