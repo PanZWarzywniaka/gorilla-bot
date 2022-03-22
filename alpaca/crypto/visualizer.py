@@ -11,10 +11,10 @@ class Visualizer:
         self.fig.append_trace(
             go.Candlestick(
                 x=self.df.index,
-                open=self.df['Open'],
-                high=self.df['High'],
-                low=self.df['Low'],
-                close=self.df['Close'],
+                open=self.df['open'],
+                high=self.df['high'],
+                low=self.df['low'],
+                close=self.df['close'],
                 increasing_line_color='#ff9900',
                 decreasing_line_color='black',
                 showlegend=False
@@ -52,25 +52,25 @@ class Visualizer:
         )
 
     def __prices_chart(self, row, col):  # 1st
-        self.__scatter_line(row, col, '#ff9900', "Open")
+        self.__scatter_line(row, col, '#ff9900', "open")
         self.__candlesticks(row, col)
         self.__vertical_signal_lines(row, col, "green", 2)   # buy
         self.__vertical_signal_lines(row, col, "red", 3)     # sell
 
     def __macd_chart(self, row, col):  # 2nd
         # Fast Signal ( % k)  # orange
-        self.__scatter_line(row, col, '#ff9900', 'MACD_fast')
+        self.__scatter_line(row, col, '#ff9900', 'macd_fast')
 
         # Slow signal (%d) #black
-        self.__scatter_line(row, col, '#000000', 'MACD_slow')
+        self.__scatter_line(row, col, '#000000', 'macd_slow')
 
         # Plot the histogram
-        self.__histogram(row, col, '#000', '#ff9900', 'MACD_hist')
+        self.__histogram(row, col, '#000', '#ff9900', 'macd_hist')
 
     def __rsi_chart(self, row, col):
 
         # RSI
-        self.__scatter_line(row, col, '#52307c', "RSI")
+        self.__scatter_line(row, col, '#52307c', "rsi")
         # RSI_threshold
         self.fig.add_hline(y=self.rsi_threshold,
                            line_color='#5230ff', row=3, col=1)

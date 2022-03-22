@@ -16,7 +16,7 @@ def main():
         starting_asset=0,
 
         # as percent of entry money
-        take_profit_ratio=2,
+        take_profit_ratio=3,
         stop_loss_ratio=1,
 
         rsi_threshold=30,
@@ -25,11 +25,9 @@ def main():
         period="7d",
         interval="5m")
 
-    trader.download_data()
     # trader.start_database()
     # trader.save_data()
 
-    trader.process_data()
     trader.calculate_profit()
     # df = trader.data
     # df = df.loc[df['action_observed'] != 0]
