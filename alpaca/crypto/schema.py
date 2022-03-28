@@ -1,6 +1,7 @@
-from peewee import SqliteDatabase, Model, IntegerField, FloatField, DateField
+from peewee import MySQLDatabase, Model, IntegerField, FloatField, DateField
 
-db = SqliteDatabase("trading.db")
+db = MySQLDatabase('trading', user='root', password='dupadupadupa',
+                   host='127.0.0.1', port=3306)
 
 
 class BaseModel(Model):

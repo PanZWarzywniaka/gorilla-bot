@@ -1,7 +1,9 @@
+from datetime import datetime
 import yfinance as yf
 import pandas as pd
 import numpy as np
 import pandas_ta as ta
+from schema import db, Candlestick
 
 
 class DataHandler():
@@ -19,6 +21,8 @@ class DataHandler():
 
         self.__download_data()
         self.__process_data()
+        # self.__start_database()
+        # self.__save_data()
 
     def __download_data(self):
         print("Downloading...")
@@ -66,27 +70,22 @@ class DataHandler():
         print(self.data)
         self.data.index.name = 'datetime'
 
-    # def start_database(self):
-    #     db.connect()
-    #     db.create_tables([Candlestick])
+    def __start_database(self):
+        db.connect()
+        db.create_tables([Candlestick])
 
-    # def save_data(self):
-    #     df = self.data.reset_index()
-    #     print("Creating list to insert")
-    #     json = df.to_json(orient="records")
-    #     # self.print_json(json)
-    #     print("Writing to db")
-    #     # for index, candlestick in df.iterrows():
-    #     #     # obj =
-    #     #     print(f"Writing to database: {index}")
-    #     #     c = candlestick
-    #     #     d = datetime.strftime(c['datetime'], "%Y-%m-%d %H:%M:%S+%z")
-    #     #     Candlestick.create(
-    #     #         datetime=d,
-    #     #         open=float(c['open']),
-    #     #         high=float(c['High']),
-    #     #         low=float(c['Low']),
-    #     #         close=float(c['Close']),
-    #     #         adj_close=float(c['Adj Close']),
-    #     #         volume=float(c['Volume'])
-    #     #     ).save()
+    def __save_data(self):
+        candlesticks = list(self.data.itertuples(name=None))
+
+        print("Writing to db:")
+        with db.atomic():
+            for c in candlesticks:
+                Candlestick.create(
+                    datetime=c[0],
+                    open=c[1],
+                    high=c[2],
+                    low=c[3],
+                    close=c[4],
+                    adj_close=c[5],
+                    volume=c[6]
+                )
