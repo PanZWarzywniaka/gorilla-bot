@@ -28,8 +28,8 @@ def main():
     # trader.start_database()
     # trader.save_data()
 
-    # trader.calculate_profit()
-    # trader.make_charts()
+    trader.calculate_profit()
+    trader.make_charts()
 
 
 if __name__ == '__main__':

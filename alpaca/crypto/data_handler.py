@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import pandas_ta as ta
-from schema import db, Candlestick
+from schema import db, Candlestick, Trade
 
 
 class DataHandler():
@@ -18,11 +18,16 @@ class DataHandler():
         self.period = period
         self.interval = interval
         self.rsi_length = rsi_length
+        self.data = None
 
         self.__download_data()
+
+        db.connect()
+        self.__reset_database()
+        self.__save_data()
+        self.__load_data()
+
         self.__process_data()
-        # self.__start_database()
-        # self.__save_data()
 
     def __download_data(self):
         print("Downloading...")
@@ -70,9 +75,9 @@ class DataHandler():
         print(self.data)
         self.data.index.name = 'datetime'
 
-    def __start_database(self):
-        db.connect()
-        tables = [Candlestick]
+    def __reset_database(self):
+
+        tables = [Candlestick, Trade]
         db.drop_tables(tables)
         db.create_tables(tables)
 
@@ -94,3 +99,19 @@ class DataHandler():
                                     ]).execute()
 
         print("Writing complete.")
+
+    def __load_data(self):
+        print("Loading from db...")
+        query = Candlestick.select()
+
+        data = {
+            'Open': [c.open for c in query],
+            'High': [c.high for c in query],
+            'Low': [c.low for c in query],
+            'Close': [c.close for c in query],
+            'Adj close': [c.adj_close for c in query],
+            'Volume': [c.volume for c in query],
+        }
+
+        self.data = pd.DataFrame(data, index=[c.datetime for c in query])
+        print("Data loaded.")

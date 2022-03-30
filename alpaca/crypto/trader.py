@@ -3,9 +3,9 @@ from datetime import datetime
 import json
 
 # owm
-from schema import db, Candlestick
 from visualizer import Visualizer
 from data_handler import DataHandler
+from schema import Trade
 
 
 class Trader:
@@ -33,6 +33,8 @@ class Trader:
 
         self.price_at_entry = None
         self.rsi_signal = False
+
+        self.current_trade = None
 
     def buy_all(self) -> bool:
         if self.dollars == 0:
@@ -65,6 +67,10 @@ class Trader:
         self.asset = 0
         self.price_at_entry = None
         self.rsi_signal = False
+
+        self.current_trade.sell_cs = self.candlestick.datetime
+        self.current_trade.save()
+        self.current_trade = None
 
         return True
 
@@ -107,6 +113,8 @@ class Trader:
             if self.buy_signal():
                 self.buy_all()
                 self.data.at[c['datetime'], 'action_observed'] = 2
+                if self.current_trade is None:
+                    self.current_trade = Trade.create(buy_cs=c.datetime)
 
             # sell
             if self.stop_loss_signal() or self.take_profit_signal():

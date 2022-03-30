@@ -1,4 +1,4 @@
-from peewee import MySQLDatabase, Model, FloatField, DateTimeField
+from peewee import MySQLDatabase, Model, FloatField, DateTimeField, ForeignKeyField
 
 db = MySQLDatabase('trading', user='root', password='dupadupadupa',
                    host='127.0.0.1', port=3306)
@@ -18,3 +18,8 @@ class Candlestick(BaseModel):
     close = FloatField(null=False, index=True)
     adj_close = FloatField(null=False, index=True)
     volume = FloatField(null=False, index=True)
+
+
+class Trade(BaseModel):
+    buy_cs = ForeignKeyField(Candlestick, unique=True, null=False)
+    sell_cs = ForeignKeyField(Candlestick, unique=True, null=True)
