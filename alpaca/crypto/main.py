@@ -1,6 +1,6 @@
 from connector import Connector
 from trader import Trader
-
+from schema import Trade
 API_KEY_ID = "PKWQG5S6ADTMZPWJIS3Y"
 API_SECRET_KEY = "hi4MJ13M3i9OUUPv0wLDHvnycfAlP838JEg8qCor"
 API_URL = 'https://paper-api.alpaca.markets'
@@ -29,7 +29,8 @@ def main():
     # trader.save_data()
 
     trader.calculate_profit()
-    trader.make_charts()
+    # trader.make_charts()
+    Trade.calculate_profit()
 
 
 if __name__ == '__main__':
