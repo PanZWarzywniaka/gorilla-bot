@@ -116,6 +116,7 @@ class Trader:
         # end of time
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
+        print(f"MONEY: {self.dollars} $$$")
 
     def __set_signal():  # to be implemted
         pass

@@ -28,12 +28,8 @@ def main():
     # trader.start_database()
     # trader.save_data()
 
-    trader.calculate_profit()
-    # df = trader.data
-    # df = df.loc[df['action_observed'] != 0]
-    # print(df)
-    trader.make_charts()
-    print(f"MONEY: {trader.dollars} $$$")
+    # trader.calculate_profit()
+    # trader.make_charts()
 
 
 if __name__ == '__main__':

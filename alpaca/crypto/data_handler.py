@@ -72,20 +72,25 @@ class DataHandler():
 
     def __start_database(self):
         db.connect()
-        db.create_tables([Candlestick])
+        tables = [Candlestick]
+        db.drop_tables(tables)
+        db.create_tables(tables)
 
     def __save_data(self):
-        candlesticks = list(self.data.itertuples(name=None))
 
-        print("Writing to db:")
+        candlestick_list = list(self.data.itertuples(name=None))
+
+        print("Writing to db...")
         with db.atomic():
-            for c in candlesticks:
-                Candlestick.create(
-                    datetime=c[0],
-                    open=c[1],
-                    high=c[2],
-                    low=c[3],
-                    close=c[4],
-                    adj_close=c[5],
-                    volume=c[6]
-                )
+            Candlestick.insert_many(candlestick_list,
+                                    fields=[
+                                        Candlestick.datetime,
+                                        Candlestick.open,
+                                        Candlestick.high,
+                                        Candlestick.low,
+                                        Candlestick.close,
+                                        Candlestick.adj_close,
+                                        Candlestick.volume,
+                                    ]).execute()
+
+        print("Writing complete.")
