@@ -26,7 +26,6 @@ class Trader:
         self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
 
-        self.__clear_database()
         self.data = Candlestick.download_yahoo_candlestics(
             ticker, period, interval)
 

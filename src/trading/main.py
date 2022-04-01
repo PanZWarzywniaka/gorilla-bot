@@ -25,11 +25,6 @@ def main():
         period="7d",
         interval="5m")
 
-    # trader.start_database()
-    # trader.save_data()
-
-    # trader.make_charts()
-
 
 if __name__ == '__main__':
     main()
