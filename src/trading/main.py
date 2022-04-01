@@ -1,5 +1,6 @@
 from connector import Connector
 from trader import Trader
+from historical_trader import HistoricalTrader
 
 API_KEY_ID = "PKWQG5S6ADTMZPWJIS3Y"
 API_SECRET_KEY = "hi4MJ13M3i9OUUPv0wLDHvnycfAlP838JEg8qCor"
@@ -11,7 +12,7 @@ def main():
     # x = trader.request("GET", "/v2/account")
     # trader.print_json(x.json())
 
-    trader = Trader(
+    trader = HistoricalTrader(
         dollars=100,
         starting_asset=0,
 

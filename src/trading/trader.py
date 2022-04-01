@@ -40,11 +40,6 @@ class Trader:
 
         self.current_trade = None
 
-        self.run_historical_simulation()
-
-        Trade.calculate_investment_return()
-        self.make_charts()
-
     def __clear_database(self):
         classes = [Trade, Candlestick, ]
         list(map(lambda x: x.clear_table(x), classes))
@@ -116,30 +111,6 @@ class Trader:
             return False
 
         return True
-
-    def run_historical_simulation(self):
-
-        df = self.data.reset_index()
-        for index, c in df.iterrows():
-
-            self.index = index
-            self.candlestick = c
-
-            # rsi signal
-            if self.rsi_signal():
-                self.rsi_triggered = True
-            # buy
-            if self.buy_signal():
-                self.buy_all()
-
-            # sell
-            if self.stop_loss_signal() or self.take_profit_signal():
-                self.sell_all()
-
-        # end of time
-        self.candlestick = df.iloc[-1]  # last candle stick
-        self.sell_all()
-        print(f"MONEY: {self.dollars} $$$")
 
     def make_charts(self):
         Visualizer(self.data, self.rsi_threshold)
