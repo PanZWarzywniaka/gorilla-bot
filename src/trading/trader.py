@@ -3,9 +3,10 @@ from datetime import datetime
 import json
 
 # owm
-from visualizer import Visualizer
+from util.visualizer import Visualizer
 from data_handler import DataHandler
-from schema import Trade
+from models.trade import Trade
+from models.trade import Candlestick
 
 
 class Trader:
@@ -16,7 +17,6 @@ class Trader:
                  take_profit_ratio=2,
                  stop_loss_ratio=1,
                  rsi_threshold=30,
-                 rsi_length=14,
                  ticker="BTC-USD",
                  period="7d",
                  interval="5m") -> None:
@@ -26,15 +26,23 @@ class Trader:
         self.take_profit_ratio = take_profit_ratio
         self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
-        self.rsi_length = rsi_length
 
+        self.__clear_database()
         self.data = DataHandler(
-            ticker=ticker, period=period, interval=interval, rsi_length=rsi_length).data
+            ticker=ticker, period=period, interval=interval).data
 
         self.price_at_entry = None
         self.rsi_signal = False
 
         self.current_trade = None
+
+        self.calculate_profit()
+        self.make_charts()
+        Trade.calculate_investment_return()
+
+    def __clear_database(self):
+        classes = [Trade, Candlestick, ]
+        list(map(lambda x: x.clear_table(x), classes))
 
     def buy_all(self) -> bool:
         if self.dollars == 0:
