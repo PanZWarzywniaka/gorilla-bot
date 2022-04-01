@@ -4,7 +4,6 @@ import json
 
 # owm
 from util.visualizer import Visualizer
-from data_handler import DataHandler
 from models.trade import Trade
 from models.trade import Candlestick
 
@@ -28,8 +27,14 @@ class Trader:
         self.rsi_threshold = rsi_threshold
 
         self.__clear_database()
-        self.data = DataHandler(
-            ticker=ticker, period=period, interval=interval).data
+        self.data = Candlestick.download_yahoo_candlestics(
+            ticker, period, interval)
+
+        # db test
+        Candlestick.save(self.data)
+        self.data = Candlestick.load()
+
+        self.data = Candlestick.process_candlestics(self.data)
 
         self.price_at_entry = None
         self.rsi_signal = False
@@ -37,8 +42,8 @@ class Trader:
         self.current_trade = None
 
         self.calculate_profit()
-        self.make_charts()
         Trade.calculate_investment_return()
+        self.make_charts()
 
     def __clear_database(self):
         classes = [Trade, Candlestick, ]
@@ -136,9 +141,6 @@ class Trader:
 
     def __set_signal():  # to be implemted
         pass
-
-    def print_json(self, raw_json):
-        print(json.dumps(raw_json, indent=4))
 
     def make_charts(self):
         Visualizer(self.data, self.rsi_threshold)
