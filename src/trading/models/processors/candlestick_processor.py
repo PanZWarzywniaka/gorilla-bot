@@ -56,5 +56,3 @@ class CandlestickProcessor(object):
 
         self.data['macd_above'] = self.data['macd_fast'] >= self.data['macd_slow']
         self.data['macd_crossover'] = self.data['macd_above'].diff()
-
-        self.data['action_observed'] = 0

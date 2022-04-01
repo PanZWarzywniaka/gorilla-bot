@@ -36,12 +36,12 @@ class Trader:
 
         self.data = Candlestick.process_candlestics(self.data)
 
-        self.price_at_entry = None
-        self.rsi_signal = False
+        self.rsi_triggered = False
 
         self.current_trade = None
 
-        self.calculate_profit()
+        self.run_historical_simulation()
+
         Trade.calculate_investment_return()
         self.make_charts()
 
@@ -50,67 +50,74 @@ class Trader:
         list(map(lambda x: x.clear_table(x), classes))
 
     def buy_all(self) -> bool:
-        if self.dollars == 0:
-            return False
+
+        self.current_trade = Trade.create(buy_cs=self.candlestick.datetime)
 
         price_for_asset = self.candlestick["open"]
-        self.price_at_entry = price_for_asset
         self.asset = self.dollars/price_for_asset
         self.dollars = 0
 
-        print(f"Bought asset  " +
-              f"Time: {self.candlestick['datetime']}")
         return True
 
-    def trade_result(self, exit_price):
-        return (exit_price/self.price_at_entry-1)*100
-
     def sell_all(self) -> bool:
-        if self.asset == 0:
+        if self.current_trade is None:
             return False
 
         price_for_asset = self.candlestick["open"]
-
-        print(f"Selling asset " +
-              f"Time: {self.candlestick['datetime']}")
-        print(
-            f"\nProfit on trade: {self.trade_result(price_for_asset)} % \n")
-
         self.dollars = self.asset*price_for_asset
         self.asset = 0
-        self.price_at_entry = None
-        self.rsi_signal = False
-
         self.current_trade.sell_cs = self.candlestick.datetime
         self.current_trade.save()
-        self.current_trade = None
 
+        self.__reset_variables()
         return True
 
-    def check_rsi_signal(self) -> bool:
-        c = self.candlestick
-
-        return c['rsi'] < self.rsi_threshold
+    def rsi_signal(self) -> bool:
+        return self.candlestick['rsi'] < self.rsi_threshold
 
     def buy_signal(self) -> bool:
         c = self.candlestick
-        ret = c['macd_crossover'] and c['macd_above'] and self.rsi_signal
-        return ret
+
+        return self.__can_buy() and \
+            self.rsi_triggered and \
+            c['macd_crossover'] and \
+            c['macd_above']
 
     def stop_loss_signal(self) -> bool:
-        if self.price_at_entry is None:
-            return False
         c = self.candlestick
-        return self.trade_result(c['open']) <= -self.stop_loss_ratio
+
+        return self.__can_sell() and \
+            self.current_trade.potential_return(
+                c['open']) <= -self.stop_loss_ratio
 
     def take_profit_signal(self) -> bool:
-        if self.price_at_entry is None:
+        c = self.candlestick
+
+        return self.__can_sell() and \
+            self.current_trade.potential_return(
+                c['open']) >= self.take_profit_ratio
+
+    def __reset_variables(self):
+        self.price_at_entry = None
+        self.rsi_triggered = False
+        self.current_trade = None
+
+    def __can_buy(self) -> bool:
+        if self.dollars == 0:
             return False
 
-        c = self.candlestick
-        return self.trade_result(c['open']) >= self.take_profit_ratio
+        if self.current_trade is not None:
+            return False
 
-    def calculate_profit(self):
+        return True
+
+    def __can_sell(self) -> bool:
+        if self.asset == 0:
+            return False
+
+        return True
+
+    def run_historical_simulation(self):
 
         df = self.data.reset_index()
         for index, c in df.iterrows():
@@ -119,28 +126,20 @@ class Trader:
             self.candlestick = c
 
             # rsi signal
-            if self.check_rsi_signal():
-                self.rsi_signal = True
-                self.data.at[c['datetime'], 'action_observed'] = 1
+            if self.rsi_signal():
+                self.rsi_triggered = True
             # buy
             if self.buy_signal():
                 self.buy_all()
-                self.data.at[c['datetime'], 'action_observed'] = 2
-                if self.current_trade is None:
-                    self.current_trade = Trade.create(buy_cs=c.datetime)
 
             # sell
             if self.stop_loss_signal() or self.take_profit_signal():
                 self.sell_all()
-                self.data.at[c['datetime'], 'action_observed'] = 3
 
         # end of time
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
         print(f"MONEY: {self.dollars} $$$")
-
-    def __set_signal():  # to be implemted
-        pass
 
     def make_charts(self):
         Visualizer(self.data, self.rsi_threshold)

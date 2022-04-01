@@ -34,3 +34,7 @@ class Trade(BaseModel):
         sell_price = self.sell_cs.open
         buy_price = self.buy_cs.open
         return sell_price/buy_price
+
+    def potential_return(self, sell_price):
+        buy_price = self.buy_cs.open
+        return 100*(sell_price/buy_price-1)
