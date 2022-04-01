@@ -17,11 +17,22 @@ class Candlestick(BaseModel):
 
     @staticmethod
     def save(df: pd.DataFrame):
-        candlestick_list = list(df.itertuples(name=None))
 
+        def get_candlesticks_to_insert(new: pd.DataFrame, existing: pd.DataFrame) -> list:
+            new_list = list(new.itertuples(name=None))
+            existing_list = list(existing.itertuples(name=None))
+            if not existing_list:
+                return new_list
+
+            last_cs_time = existing_list[-1][0]
+            to_insert = new.loc[last_cs_time:].iloc[1:]
+            to_insert_list = list(to_insert.itertuples(name=None))
+            return to_insert_list
+
+        to_insert = get_candlesticks_to_insert(df, Candlestick.load())
         print("Writing to db...")
         # with BaseModel.Meta.database.atomic():
-        Candlestick.insert_many(candlestick_list,
+        Candlestick.insert_many(to_insert,
                                 fields=[
                                     Candlestick.datetime,
                                     Candlestick.open,

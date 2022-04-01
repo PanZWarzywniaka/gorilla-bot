@@ -20,7 +20,7 @@ class HistoricalTrader(Trader):
                          ticker,
                          period,
                          interval)
-
+        Trade.clear_table(Trade)
         self.run_historical_simulation()
         self.make_charts()
 
