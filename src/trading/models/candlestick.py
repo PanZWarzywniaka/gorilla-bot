@@ -1,3 +1,4 @@
+from datetime import tzinfo
 from .base_model import BaseModel
 from .processors.candlestick_processor import CandlestickProcessor
 from peewee import DateTimeField, FloatField
@@ -16,22 +17,33 @@ class Candlestick(BaseModel):
     volume = FloatField(null=False, index=True)
 
     @staticmethod
-    def save(df: pd.DataFrame):
+    def save(new: pd.DataFrame):
 
-        def get_candlesticks_to_insert(new: pd.DataFrame, existing: pd.DataFrame) -> list:
-            new_list = list(new.itertuples(name=None))
+        def get_candlesticks_to_insert(existing: pd.DataFrame, new: pd.DataFrame) -> list:
+
+            if existing.empty:  # if existing CS's is empty, insert all new CS's
+                to_insert_list = list(new.itertuples(name=None))
+                return to_insert_list
+
             existing_list = list(existing.itertuples(name=None))
-            if not existing_list:
-                return new_list
-
+            # last CS in list, first item of cs no tzinfo
+            first_cs_time = existing_list[0][0]
             last_cs_time = existing_list[-1][0]
-            to_insert = new.loc[last_cs_time:].iloc[1:]
-            to_insert_list = list(to_insert.itertuples(name=None))
+
+            # find out which CS's have later datetime than already exsting ones
+            # with tz info
+            before_first = new.loc[:first_cs_time].iloc[:-1]
+            before_first_list = list(before_first.itertuples(name=None))
+
+            after_last = new.loc[last_cs_time:].iloc[1:]
+            after_last_list = list(after_last.itertuples(name=None))
+
+            to_insert_list = before_first_list + after_last_list
             return to_insert_list
 
-        to_insert = get_candlesticks_to_insert(df, Candlestick.load())
+        to_insert = get_candlesticks_to_insert(Candlestick.load(), new)
         print("Writing to db...")
-        # with BaseModel.Meta.database.atomic():
+        print(f"Writing {len(to_insert)} candlesticks.")
         Candlestick.insert_many(to_insert,
                                 fields=[
                                     Candlestick.datetime,
@@ -74,10 +86,15 @@ class Candlestick(BaseModel):
     @staticmethod
     def download_yahoo_candlestics(tickers, period, interval) -> pd.DataFrame:
 
-        return yf.download(
+        df = yf.download(
             tickers=tickers,
             period=period,
             interval=interval,
             # start="2022-03-07",
             # end="2022-03-14"
         )
+
+        last_cs = df.iloc[-1:]
+        if last_cs.index.minute % 5 != 0:  # not 5m interval
+            df = df[:-1]  # droping last row
+        return df

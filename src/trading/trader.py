@@ -11,6 +11,7 @@ from models.trade import Candlestick
 class Trader:
 
     def __init__(self,
+                 clear_db=True,
                  dollars=100,
                  starting_asset=0,
                  take_profit_ratio=2,
@@ -30,6 +31,9 @@ class Trader:
             ticker, period, interval)
 
         # db test
+        if clear_db:
+            self.__clear_database()
+
         Candlestick.save(self.data)
         self.data = Candlestick.load()
 
@@ -40,8 +44,10 @@ class Trader:
         self.current_trade = None
 
     def __clear_database(self):
+        print("Clearing db...")
         classes = [Trade, Candlestick, ]
         list(map(lambda x: x.clear_table(x), classes))
+        print("Db cleared...")
 
     def buy_all(self) -> bool:
 

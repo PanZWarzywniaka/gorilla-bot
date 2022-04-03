@@ -13,6 +13,7 @@ def main():
     # trader.print_json(x.json())
 
     trader = HistoricalTrader(
+        clear_db=False,
         dollars=100,
         starting_asset=0,
 
@@ -22,7 +23,7 @@ def main():
 
         rsi_threshold=30,
         ticker="BTC-USD",
-        period="7d",
+        period="30d",
         interval="5m")
 
 
