@@ -23,7 +23,6 @@ class HistoricalTrader(Trader):
                          interval)
         Trade.clear_table(Trade)
         self.run_historical_simulation()
-        self.make_charts()
 
     def run_historical_simulation(self):
 

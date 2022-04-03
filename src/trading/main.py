@@ -23,8 +23,10 @@ def main():
 
         rsi_threshold=30,
         ticker="BTC-USD",
-        period="30d",
+        period="60d",
         interval="5m")
+
+    trader.make_charts()
 
 
 if __name__ == '__main__':
