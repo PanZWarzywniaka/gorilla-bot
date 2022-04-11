@@ -16,8 +16,8 @@ class Candlestick(BaseModel):
     adj_close = FloatField(null=False, index=True)
     volume = FloatField(null=False, index=True)
 
-    @staticmethod
-    def save(new: pd.DataFrame):
+    @classmethod
+    def save(cls, new: pd.DataFrame):
 
         def get_candlesticks_to_insert(existing: pd.DataFrame, new: pd.DataFrame) -> list:
 
@@ -41,27 +41,27 @@ class Candlestick(BaseModel):
             to_insert_list = before_first_list + after_last_list
             return to_insert_list
 
-        to_insert = get_candlesticks_to_insert(Candlestick.load(), new)
+        to_insert = get_candlesticks_to_insert(cls.load(), new)
         print("Writing to db...")
         print(f"Writing {len(to_insert)} candlesticks.")
-        Candlestick.insert_many(to_insert,
-                                fields=[
-                                    Candlestick.datetime,
-                                    Candlestick.open,
-                                    Candlestick.high,
-                                    Candlestick.low,
-                                    Candlestick.close,
-                                    Candlestick.adj_close,
-                                    Candlestick.volume,
-                                ]).execute()
+        cls.insert_many(to_insert,
+                        fields=[
+                            cls.datetime,
+                            cls.open,
+                            cls.high,
+                            cls.low,
+                            cls.close,
+                            cls.adj_close,
+                            cls.volume,
+                        ]).execute()
 
         print("Writing complete.")
         print("Loading from db...")
 
-    @staticmethod
-    def load() -> pd.DataFrame:
+    @classmethod
+    def load(cls) -> pd.DataFrame:
         print("Loading data...")
-        query = Candlestick.select()
+        query = cls.select()
 
         columns = {
             'Open': [c.open for c in query],
@@ -77,17 +77,17 @@ class Candlestick(BaseModel):
         return df
 
     @staticmethod
-    def process_candlestics(df) -> pd.DataFrame:
+    def process_candlesticks(df) -> pd.DataFrame:
         return CandlestickProcessor(df, rsi_length=14,
                                     macd_fast=12,
                                     macd_slow=26,
                                     macd_signal=9
                                     ).processed_data
 
-    @staticmethod
-    def get_processed_candlesticks() -> pd.DataFrame:
-        df = Candlestick.load()
-        return Candlestick.process_candlestics(df)
+    @classmethod
+    def get_processed_candlesticks(cls) -> pd.DataFrame:
+        df = cls.load()
+        return cls.process_candlesticks(df)
 
     @staticmethod
     def download_yahoo_candlestics(tickers, period, interval) -> pd.DataFrame:
