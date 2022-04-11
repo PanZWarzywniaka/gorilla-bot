@@ -89,21 +89,22 @@ class Candlestick(BaseModel):
         return cls.process_candlesticks(df)
 
     @classmethod
-    def update_db_with_new_candlesticks(cls, tickers, period, interval):
+    def update_db_with_new_candlesticks(cls, tickers, period, interval, start=None, end=None):
+        print("Updating database...")
         df = cls.__download_yahoo_candlestics(
-            tickers, period, interval)
+            tickers, period, interval, start, end)
 
         cls.save(df)
 
     @staticmethod
-    def __download_yahoo_candlestics(tickers, period, interval) -> pd.DataFrame:
+    def __download_yahoo_candlestics(tickers, period, interval, start=None, end=None) -> pd.DataFrame:
 
         df = yf.download(
             tickers=tickers,
             period=period,
             interval=interval,
-            # start="2022-03-07",
-            # end="2022-03-14"
+            start=start,
+            end=end
         )
 
         last_cs = df.iloc[-1:]

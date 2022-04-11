@@ -1,4 +1,6 @@
 import time
+import datetime
+from models.candlestick import Candlestick
 from trader import Trader
 from models.trade import Trade
 
@@ -24,11 +26,16 @@ class LiveTrader(Trader):
             ticker,
             historic_data_period,
             interval)
+
+        self.ticker = ticker
+        self.interval = interval
         self.main_loop()
-        self.print_stats()
 
     def main_loop(self):
         print("Starting main loop")
         while True:
-            print("Working")
-            time.sleep(1)
+            Candlestick.update_db_with_new_candlesticks(
+                self.ticker, "1d", self.interval,
+                start=datetime.datetime.now() - datetime.timedelta(minutes=15))
+            print("Sleeping")
+            time.sleep(10)
