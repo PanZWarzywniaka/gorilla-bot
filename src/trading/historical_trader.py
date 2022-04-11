@@ -1,5 +1,6 @@
-from trader import Trader
+from models.candlestick import Candlestick
 from models.trade import Trade
+from trader import Trader
 
 
 class HistoricalTrader(Trader):
@@ -51,3 +52,4 @@ class HistoricalTrader(Trader):
         self.sell_all()
         print(f"MONEY: {self.dollars} $$$")
         Trade.print_stats()
+        Candlestick.print_stats()

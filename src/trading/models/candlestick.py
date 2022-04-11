@@ -118,3 +118,14 @@ class Candlestick(BaseModel):
     @classmethod
     def get_last_row(cls):
         return cls.select().order_by(cls.datetime.desc()).get()
+
+    @classmethod
+    def print_stats(cls) -> None:
+        super().print_stats()
+
+        first_cs_datetime = cls.get_first_row().datetime
+        last_cs_datetime = cls.get_last_row().datetime
+
+        print(f"First at: {first_cs_datetime}")
+        print(f"Last at: {last_cs_datetime}")
+        print(f"Covering: {last_cs_datetime-first_cs_datetime}")

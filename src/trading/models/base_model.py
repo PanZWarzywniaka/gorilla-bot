@@ -15,6 +15,15 @@ class BaseModel(Model):
         return True
 
     @classmethod
+    def count(cls) -> int:
+        return cls.select().count()
+
+    @classmethod
+    def print_stats(cls) -> None:
+        print(f"\n\nPrinting {cls.__name__}'s stats: \n")
+        print(f"There are {cls.count()} {cls.__name__.lower()}s \n")
+
+    @classmethod
     @abstractmethod
     def get_first_row(cls): pass
 

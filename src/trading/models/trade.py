@@ -34,9 +34,10 @@ class Trade(BaseModel):
         info += f"Sold at: {self.sell_cs}\n"
         return info
 
-    @staticmethod
-    def print_stats() -> None:
-        trades = Trade.select()
+    @classmethod
+    def print_stats(cls) -> None:
+        super().print_stats()
+        trades = cls.select()
 
         result = 1
         for t in trades:
