@@ -48,6 +48,10 @@ class Trade(BaseModel):
 
         print(f"\n\nCalculated profit: {result}")
 
+    @classmethod
+    def get_last_row(cls):
+        cls.select().order_by(cls.id.desc()).get()
+
     def calculate_return(self):
         sell_price = self.sell_cs.open
         buy_price = self.buy_cs.open

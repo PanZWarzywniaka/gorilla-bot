@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from peewee import MySQLDatabase
 from peewee import Model
 
@@ -12,3 +13,7 @@ class BaseModel(Model):
     def clear_table(cls):
         cls.delete().execute()
         return True
+
+    @classmethod
+    @abstractmethod
+    def get_last_row(cls): pass

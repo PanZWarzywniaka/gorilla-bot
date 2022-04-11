@@ -104,3 +104,7 @@ class Candlestick(BaseModel):
         if last_cs.index.minute % 5 != 0:  # not 5m interval
             df = df[:-1]  # droping last row
         return df
+
+    @classmethod
+    def get_last_row(cls):
+        cls.select().order_by(cls.datetime.desc()).get()
