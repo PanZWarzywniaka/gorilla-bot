@@ -1,3 +1,4 @@
+from datetime import datetime
 import plotly.subplots as subplots
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -7,8 +8,10 @@ from models.trade import Trade
 
 class Visualizer:
 
-    def __init__(self, df, rsi_threshold) -> None:
-        self.df = df
+    def __init__(self, df, rsi_threshold, start: datetime = None, end: datetime = None):
+        self.df = df.loc[start:end]
+        self.trades = Trade.load(start, end)
+
         self.rsi_threshold = rsi_threshold
         self.__set_layout()
         # initialize 3x1 figure
@@ -69,12 +72,8 @@ class Visualizer:
             ), row=row, col=col
         )
 
-    def __prices_chart(self, row, col):  # 1st
-        self.__scatter_line(row, col, '#ff9900', "open")
-        self.__candlesticks(row, col)
-
-        trades = Trade.load()
-        trade_list = list(trades.itertuples())
+    def __show_trades(self, row, col):
+        trade_list = list(self.trades.itertuples())
         for t in trade_list:
             # buy
             self.fig.add_vline(t.buy_cs.datetime,
@@ -83,11 +82,10 @@ class Visualizer:
             self.fig.add_vline(t.sell_cs.datetime,
                                line_color="red", row=row, col=col)
 
-        # self.__vertical_signal_lines(row, col, "green", 2)
-        # self.__vertical_signal_lines(row, col, "red", 3)
-
-    # def __vertical_signal_lines(self, row, col, colour: str, action_code: int):
-    #     for index, _ in self.df.loc[self.df['action_observed'] == action_code].iterrows():
+    def __prices_chart(self, row, col):  # 1st
+        self.__scatter_line(row, col, '#ff9900', "open")
+        self.__candlesticks(row, col)
+        self.__show_trades(row, col)
 
     def __macd_chart(self, row, col):  # 2nd
         # Fast Signal ( % k)  # orange

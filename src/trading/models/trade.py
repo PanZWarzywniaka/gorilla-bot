@@ -1,3 +1,4 @@
+from datetime import datetime
 from peewee import ForeignKeyField
 from models.candlestick import Candlestick
 from models.base_model import BaseModel
@@ -9,9 +10,15 @@ class Trade(BaseModel):
     sell_cs = ForeignKeyField(Candlestick, unique=True, null=True)
 
     @staticmethod
-    def load() -> pd.DataFrame:
+    def load(start: datetime = None, end: datetime = None) -> pd.DataFrame:
         print("Loading trades...")
         query = Trade.select()
+
+        if start is not None:
+            query = query.where(Trade.buy_cs >= start)
+
+        if end is not None:
+            query = query.where(Trade.buy_cs <= end)
 
         columns = {
             'buy_cs': [t.buy_cs for t in query],

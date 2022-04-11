@@ -1,3 +1,4 @@
+from datetime import datetime
 from historical_trader import HistoricalTrader
 
 API_KEY_ID = "PKWQG5S6ADTMZPWJIS3Y"
@@ -21,11 +22,16 @@ def main():
         stop_loss_ratio=1,
 
         rsi_threshold=30,
+        # start=None,
+        # end=None,
         ticker="BTC-USD",
         period="60d",
         interval="5m")
 
-    # trader.make_charts()
+    trader.make_charts(
+        start=datetime(2022, 4, 2),
+        # end=datetime(2022, 4, 6),
+    )
 
 
 if __name__ == '__main__':

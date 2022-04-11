@@ -120,5 +120,5 @@ class Trader:
 
         return True
 
-    def make_charts(self):
-        Visualizer(self.data, self.rsi_threshold)
+    def make_charts(self, start: datetime = None, end: datetime = None):
+        Visualizer(self.data, self.rsi_threshold, start, end)
