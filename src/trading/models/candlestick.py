@@ -1,4 +1,5 @@
 from datetime import tzinfo
+import pytz
 from .base_model import BaseModel
 from .processors.candlestick_processor import CandlestickProcessor
 from peewee import DateTimeField, FloatField
@@ -25,9 +26,9 @@ class Candlestick(BaseModel):
                 to_insert_list = list(new.itertuples(name=None))
                 return to_insert_list
 
-            # last CS in list, first item of cs no tzinfo
-            first_cs_time = cls.get_first_row().datetime
-            last_cs_time = cls.get_last_row().datetime
+            # cetting first and last datetimes, localizing to avoid errors
+            first_cs_time = cls.get_first_row().datetime.replace(tzinfo=pytz.UTC)
+            last_cs_time = cls.get_last_row().datetime.replace(tzinfo=pytz.UTC)
 
             # find out which CS's have later datetime than already exsting ones # with tz info
             before_first = new.loc[:first_cs_time].iloc[:-1]
