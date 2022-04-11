@@ -8,7 +8,7 @@ class BaseModel(Model):
                                  host='127.0.0.1', port=3306)
         connected = database.connect()
 
-    @staticmethod
+    @classmethod
     def clear_table(cls):
         cls.delete().execute()
         return True

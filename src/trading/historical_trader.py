@@ -24,7 +24,7 @@ class HistoricalTrader(Trader):
                          ticker,
                          period,
                          interval)
-        Trade.clear_table(Trade)
+        Trade.clear_table()
         self.run_historical_simulation()
 
     def run_historical_simulation(self):

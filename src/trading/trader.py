@@ -48,8 +48,10 @@ class Trader:
 
     def __clear_database(self):
         print("Clearing db...")
-        classes = [Trade, Candlestick, ]
-        list(map(lambda x: x.clear_table(x), classes))
+
+        Trade.clear_table()
+        Candlestick.clear_table()
+
         print("Db cleared...")
 
     def buy_all(self) -> bool:
