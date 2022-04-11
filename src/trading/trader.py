@@ -37,14 +37,10 @@ class Trader:
             self.__clear_database()
 
         if update_db:
-            self.__update_db_with_new_candlesticks(ticker, period, interval)
+            Candlestick.update_db_with_new_candlesticks(
+                ticker, period, interval)
 
         self.data = Candlestick.get_processed_candlesticks()
-
-    def __update_db_with_new_candlesticks(self, ticker, period, interval):
-        df = Candlestick.download_yahoo_candlestics(
-            ticker, period, interval)
-        Candlestick.save(df)
 
     def __clear_database(self):
         print("Clearing db...")

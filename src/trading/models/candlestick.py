@@ -88,8 +88,15 @@ class Candlestick(BaseModel):
         df = cls.load()
         return cls.process_candlesticks(df)
 
+    @classmethod
+    def update_db_with_new_candlesticks(cls, tickers, period, interval):
+        df = cls.__download_yahoo_candlestics(
+            tickers, period, interval)
+
+        cls.save(df)
+
     @staticmethod
-    def download_yahoo_candlestics(tickers, period, interval) -> pd.DataFrame:
+    def __download_yahoo_candlestics(tickers, period, interval) -> pd.DataFrame:
 
         df = yf.download(
             tickers=tickers,
