@@ -1,8 +1,9 @@
+import time
 from trader import Trader
 from models.trade import Trade
 
 
-class HistoricalTrader(Trader):
+class LiveTrader(Trader):
     def __init__(self,
                  dollars=100,
                  starting_asset=0,
@@ -10,17 +11,24 @@ class HistoricalTrader(Trader):
                  stop_loss_ratio=1,
                  rsi_threshold=30,
                  ticker="BTC-USD",
-                 period="7d",
+                 historic_data_period="60d",
                  interval="5m") -> None:
-        super().__init__(dollars,
-                         starting_asset,
-                         take_profit_ratio,
-                         stop_loss_ratio,
-                         rsi_threshold,
-                         ticker,
-                         period,
-                         interval)
+        super().__init__(
+            True,   # clear_db
+            True,   # update_db
+            dollars,
+            starting_asset,
+            take_profit_ratio,
+            stop_loss_ratio,
+            rsi_threshold,
+            ticker,
+            historic_data_period,
+            interval)
         self.main_loop()
+        self.print_stats()
 
     def main_loop(self):
-        pass
+        print("Starting main loop")
+        while True:
+            print("Working")
+            time.sleep(1)

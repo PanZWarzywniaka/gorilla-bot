@@ -120,3 +120,7 @@ class Trader:
 
     def make_charts(self, start: datetime = None, end: datetime = None):
         Visualizer(self.data, self.rsi_threshold, start, end)
+
+    def print_stats(self) -> None:
+        Trade.print_stats()
+        Candlestick.print_stats()

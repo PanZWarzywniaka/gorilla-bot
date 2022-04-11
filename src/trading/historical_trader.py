@@ -27,6 +27,7 @@ class HistoricalTrader(Trader):
                          interval)
         Trade.clear_table()
         self.run_historical_simulation()
+        self.print_stats()
 
     def run_historical_simulation(self):
 
@@ -51,5 +52,3 @@ class HistoricalTrader(Trader):
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
         print(f"MONEY: {self.dollars} $$$")
-        Trade.print_stats()
-        Candlestick.print_stats()

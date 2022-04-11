@@ -127,5 +127,5 @@ class Candlestick(BaseModel):
         last_cs_datetime = cls.get_last_row().datetime
 
         print(f"First at: {first_cs_datetime}")
-        print(f"Last at: {last_cs_datetime}")
-        print(f"Covering: {last_cs_datetime-first_cs_datetime}")
+        print(f"Last at: {last_cs_datetime}\n")
+        print(f"Covering: {last_cs_datetime-first_cs_datetime}\n")
