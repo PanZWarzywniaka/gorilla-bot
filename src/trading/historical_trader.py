@@ -5,6 +5,7 @@ from models.trade import Trade
 class HistoricalTrader(Trader):
     def __init__(self,
                  clear_db=True,
+                 update_db=True,
                  dollars=100,
                  starting_asset=0,
                  take_profit_ratio=2,
@@ -13,7 +14,9 @@ class HistoricalTrader(Trader):
                  ticker="BTC-USD",
                  period="7d",
                  interval="5m") -> None:
-        super().__init__(clear_db, dollars,
+        super().__init__(clear_db,
+                         update_db,
+                         dollars,
                          starting_asset,
                          take_profit_ratio,
                          stop_loss_ratio,

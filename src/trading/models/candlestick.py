@@ -60,6 +60,7 @@ class Candlestick(BaseModel):
 
     @staticmethod
     def load() -> pd.DataFrame:
+        print("Loading data...")
         query = Candlestick.select()
 
         columns = {
@@ -82,6 +83,11 @@ class Candlestick(BaseModel):
                                     macd_slow=26,
                                     macd_signal=9
                                     ).processed_data
+
+    @staticmethod
+    def get_processed_candlesticks() -> pd.DataFrame:
+        df = Candlestick.load()
+        return Candlestick.process_candlestics(df)
 
     @staticmethod
     def download_yahoo_candlestics(tickers, period, interval) -> pd.DataFrame:

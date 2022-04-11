@@ -12,6 +12,7 @@ class Trader:
 
     def __init__(self,
                  clear_db=True,
+                 update_db=True,
                  dollars=100,
                  starting_asset=0,
                  take_profit_ratio=2,
@@ -21,27 +22,29 @@ class Trader:
                  period="7d",
                  interval="5m") -> None:
 
+        # initialize variables
         self.dollars = dollars
         self.asset = starting_asset
         self.take_profit_ratio = take_profit_ratio
         self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
 
-        self.data = Candlestick.download_yahoo_candlestics(
-            ticker, period, interval)
+        self.rsi_triggered = False
+        self.current_trade = None
 
-        # db test
+        # database work
         if clear_db:
             self.__clear_database()
 
-        Candlestick.save(self.data)
-        self.data = Candlestick.load()
+        if update_db:
+            self.__update_db_with_new_candlesticks(ticker, period, interval)
 
-        self.data = Candlestick.process_candlestics(self.data)
+        self.data = Candlestick.get_processed_candlesticks()
 
-        self.rsi_triggered = False
-
-        self.current_trade = None
+    def __update_db_with_new_candlesticks(self, ticker, period, interval):
+        df = Candlestick.download_yahoo_candlestics(
+            ticker, period, interval)
+        Candlestick.save(df)
 
     def __clear_database(self):
         print("Clearing db...")

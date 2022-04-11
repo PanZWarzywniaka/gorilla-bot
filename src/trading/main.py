@@ -1,5 +1,3 @@
-from connector import Connector
-from trader import Trader
 from historical_trader import HistoricalTrader
 
 API_KEY_ID = "PKWQG5S6ADTMZPWJIS3Y"
@@ -14,6 +12,7 @@ def main():
 
     trader = HistoricalTrader(
         clear_db=False,
+        update_db=True,  # downloads candle sticks from the internet
         dollars=100,
         starting_asset=0,
 
@@ -26,7 +25,7 @@ def main():
         period="60d",
         interval="5m")
 
-    trader.make_charts()
+    # trader.make_charts()
 
 
 if __name__ == '__main__':
