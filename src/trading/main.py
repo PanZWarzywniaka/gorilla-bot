@@ -12,7 +12,7 @@ def main():
     # trader.print_json(x.json())
 
     trader = HistoricalTrader(
-        clear_db=False,
+        clear_db=True,
         update_db=True,  # downloads candle sticks from the internet
         dollars=100,
         starting_asset=0,
@@ -25,11 +25,11 @@ def main():
         # start=None,
         # end=None,
         ticker="BTC-USD",
-        period="60d",
+        period="7d",
         interval="5m")
 
     trader.make_charts(
-        start=datetime(2022, 4, 2),
+        # start=datetime(2022, 4, 2),
         # end=datetime(2022, 4, 6),
     )
 

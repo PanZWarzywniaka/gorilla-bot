@@ -29,13 +29,24 @@ class Trade(BaseModel):
         print("Trades loaded.")
         return df
 
+    def __str__(self):
+        info = f"\nBought at: {self.buy_cs}\n"
+        info += f"Sold at: {self.sell_cs}\n"
+        return info
+
     @staticmethod
-    def calculate_investment_return():
+    def print_stats() -> None:
         trades = Trade.select()
+
         result = 1
         for t in trades:
-            result *= t.calculate_return()
-        print(result)
+            t_return = t.calculate_return()
+            result *= t_return
+
+            gain = (t_return-1)*100  # as percent
+            print(t, f"This trade return: {gain} %")
+
+        print(f"\n\nCalculated profit: {result}")
 
     def calculate_return(self):
         sell_price = self.sell_cs.open

@@ -50,4 +50,4 @@ class HistoricalTrader(Trader):
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
         print(f"MONEY: {self.dollars} $$$")
-        Trade.calculate_investment_return()
+        Trade.print_stats()
