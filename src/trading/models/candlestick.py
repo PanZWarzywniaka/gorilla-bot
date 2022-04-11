@@ -25,13 +25,11 @@ class Candlestick(BaseModel):
                 to_insert_list = list(new.itertuples(name=None))
                 return to_insert_list
 
-            existing_list = list(existing.itertuples(name=None))
             # last CS in list, first item of cs no tzinfo
-            first_cs_time = existing_list[0][0]
-            last_cs_time = existing_list[-1][0]
+            first_cs_time = cls.get_first_row().datetime
+            last_cs_time = cls.get_last_row().datetime
 
-            # find out which CS's have later datetime than already exsting ones
-            # with tz info
+            # find out which CS's have later datetime than already exsting ones # with tz info
             before_first = new.loc[:first_cs_time].iloc[:-1]
             before_first_list = list(before_first.itertuples(name=None))
 
@@ -106,5 +104,9 @@ class Candlestick(BaseModel):
         return df
 
     @classmethod
+    def get_first_row(cls):
+        return cls.select().order_by(cls.datetime.asc()).get()
+
+    @classmethod
     def get_last_row(cls):
-        cls.select().order_by(cls.datetime.desc()).get()
+        return cls.select().order_by(cls.datetime.desc()).get()
