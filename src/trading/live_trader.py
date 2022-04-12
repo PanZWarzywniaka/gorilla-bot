@@ -31,6 +31,9 @@ class LiveTrader(Trader):
         self.TIME_ZONE_OFFSET = datetime.timedelta(hours=2)
         self.ticker = ticker
         self.interval = interval
+
+        Candlestick.update_db_with_new_candlesticks(
+            ticker, period=historic_data_period, interval=interval)
         self.main_loop()
 
     def __sleep(self, duration):

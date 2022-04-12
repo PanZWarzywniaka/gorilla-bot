@@ -25,7 +25,9 @@ class HistoricalTrader(Trader):
                          ticker,
                          period,
                          interval)
+
         Trade.clear_table()
+        self.data = Candlestick.get_processed_candlesticks()
         self.run_historical_simulation()
         self.print_stats()
 

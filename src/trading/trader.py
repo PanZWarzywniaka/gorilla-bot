@@ -40,8 +40,6 @@ class Trader:
             Candlestick.update_db_with_new_candlesticks(
                 ticker, period, interval)
 
-        self.data = Candlestick.get_processed_candlesticks()
-
     def __clear_database(self):
         print("Clearing db...")
 
