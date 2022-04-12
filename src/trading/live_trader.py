@@ -27,15 +27,22 @@ class LiveTrader(Trader):
             historic_data_period,
             interval)
 
+        self.SLEEP_RATE = 5
         self.ticker = ticker
         self.interval = interval
         self.main_loop()
 
+    def __sleep(self, duration):
+        print(f"Sleeping: {duration}s")
+        for _ in range(duration):
+            print(".", end=' ', flush=True)
+            time.sleep(1)
+        print("\nWaking up")
+
     def main_loop(self):
         print("Starting main loop")
         while True:
+            self.__sleep(self.SLEEP_RATE)
             Candlestick.update_db_with_new_candlesticks(
                 self.ticker, "1d", self.interval,
                 start=datetime.datetime.now() - datetime.timedelta(minutes=15))
-            print("Sleeping")
-            time.sleep(10)
