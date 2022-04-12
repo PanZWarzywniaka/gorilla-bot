@@ -57,7 +57,7 @@ class LiveTrader(Trader):
 
             print("Got new candlestick!")
 
-            last_cs = Candlestick.get_last_row()
+            last_cs = Candlestick.get_last()
             print(last_cs)
 
             cs_time = last_cs.datetime

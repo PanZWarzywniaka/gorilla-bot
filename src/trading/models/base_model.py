@@ -25,8 +25,8 @@ class BaseModel(Model):
 
     @classmethod
     @abstractmethod
-    def get_first_row(cls): pass
+    def get_first(cls): pass
 
     @classmethod
     @abstractmethod
-    def get_last_row(cls): pass
+    def get_last(cls): pass

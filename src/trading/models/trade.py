@@ -50,7 +50,7 @@ class Trade(BaseModel):
         print(f"\nCalculated profit: {result}")
 
     @classmethod
-    def get_last_row(cls):
+    def get_last(cls):
         cls.select().order_by(cls.id.desc()).get()
 
     def calculate_return(self):

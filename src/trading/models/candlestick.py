@@ -27,8 +27,8 @@ class Candlestick(BaseModel):
                 return to_insert_list
 
             # cetting first and last datetimes, localizing to avoid errors
-            first_cs_time = cls.get_first_row().datetime.replace(tzinfo=pytz.UTC)
-            last_cs_time = cls.get_last_row().datetime.replace(tzinfo=pytz.UTC)
+            first_cs_time = cls.get_first().datetime.replace(tzinfo=pytz.UTC)
+            last_cs_time = cls.get_last().datetime.replace(tzinfo=pytz.UTC)
 
             # find out which CS's have later datetime than already exsting ones # with tz info
             before_first = new.loc[:first_cs_time].iloc[:-1]
@@ -108,19 +108,19 @@ class Candlestick(BaseModel):
         return df
 
     @classmethod
-    def get_first_row(cls):
+    def get_first(cls):
         return cls.select().order_by(cls.datetime.asc()).get()
 
     @classmethod
-    def get_last_row(cls):
+    def get_last(cls):
         return cls.select().order_by(cls.datetime.desc()).get()
 
     @classmethod
     def print_stats(cls) -> None:
         super().print_stats()
 
-        first_cs_datetime = cls.get_first_row().datetime
-        last_cs_datetime = cls.get_last_row().datetime
+        first_cs_datetime = cls.get_first().datetime
+        last_cs_datetime = cls.get_last().datetime
 
         print(f"First at: {first_cs_datetime}")
         print(f"Last at: {last_cs_datetime}\n")
