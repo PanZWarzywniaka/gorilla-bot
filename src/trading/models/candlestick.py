@@ -115,7 +115,18 @@ class Candlestick(BaseModel):
     def get_last(cls):
         return cls.select().order_by(cls.datetime.desc()).get()
 
-    @classmethod
+    def __str__(self):
+        ret = "CANDLESTICK: \n"
+        ret += f"{self.datetime = }\n"
+        ret += f"{self.open = }\n"
+        ret += f"{self.high = }\n"
+        ret += f"{self.low = }\n"
+        ret += f"{self.close = }\n"
+        ret += f"{self.adj_close = }\n"
+        ret += f"{self.volume = }\n"
+        return ret
+
+    @ classmethod
     def print_stats(cls) -> None:
         super().print_stats()
 
