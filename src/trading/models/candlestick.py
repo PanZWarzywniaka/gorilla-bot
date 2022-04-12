@@ -117,13 +117,13 @@ class Candlestick(BaseModel):
 
     def __str__(self):
         ret = "CANDLESTICK: \n"
-        ret += f"{self.datetime = }\n"
-        ret += f"{self.open = }\n"
-        ret += f"{self.high = }\n"
-        ret += f"{self.low = }\n"
-        ret += f"{self.close = }\n"
-        ret += f"{self.adj_close = }\n"
-        ret += f"{self.volume = }\n"
+        ret += f"Time: {self.datetime.__str__()}\n"
+        ret += f"Open: {self.open}\n"
+        ret += f"High: {self.high}\n"
+        ret += f"Low: {self.low}\n"
+        ret += f"Close: {self.close}\n"
+        ret += f"Adj_close: {self.adj_close}\n"
+        ret += f"Volume: {self.volume}\n"
         return ret
 
     @ classmethod

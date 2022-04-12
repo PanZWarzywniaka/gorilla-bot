@@ -47,7 +47,7 @@ class Trade(BaseModel):
             gain = (t_return-1)*100  # as percent
             print(t, f"This trade return: {gain} %")
 
-        print(f"\nCalculated profit: {result}")
+        print(f"\nTOTAL Calculated profit: {result}")
 
     @classmethod
     def get_last(cls):

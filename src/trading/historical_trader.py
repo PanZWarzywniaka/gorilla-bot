@@ -36,7 +36,6 @@ class HistoricalTrader(Trader):
         df = self.data.reset_index()
         for index, c in df.iterrows():
 
-            self.index = index
             self.candlestick = c
 
             # rsi signal

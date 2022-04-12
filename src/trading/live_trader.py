@@ -67,3 +67,5 @@ class LiveTrader(Trader):
 
             print("Got new candlestick!")
             self.__print_last_candlestick()
+
+            self.data = Candlestick.get_processed_candlesticks()
