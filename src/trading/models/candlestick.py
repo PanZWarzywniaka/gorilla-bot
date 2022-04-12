@@ -41,25 +41,20 @@ class Candlestick(BaseModel):
             return to_insert_list
 
         to_insert = get_candlesticks_to_insert(cls.load(), new)
-        print("Writing to db...")
-        print(f"Writing {len(to_insert)} candlesticks.")
-        cls.insert_many(to_insert,
-                        fields=[
-                            cls.datetime,
-                            cls.open,
-                            cls.high,
-                            cls.low,
-                            cls.close,
-                            cls.adj_close,
-                            cls.volume,
-                        ]).execute()
-
-        print("Writing complete.")
-        print("Loading from db...")
+        return cls.insert_many(to_insert,
+                               fields=[
+                                   cls.datetime,
+                                   cls.open,
+                                   cls.high,
+                                   cls.low,
+                                   cls.close,
+                                   cls.adj_close,
+                                   cls.volume,
+                               ]).execute()
 
     @classmethod
     def load(cls) -> pd.DataFrame:
-        print("Loading data...")
+        # print("Loading data...")
         query = cls.select()
 
         columns = {
@@ -72,7 +67,7 @@ class Candlestick(BaseModel):
         }
 
         df = pd.DataFrame(columns, index=[c.datetime for c in query])
-        print("Data loaded.")
+        # print("Data loaded.")
         return df
 
     @staticmethod
@@ -90,11 +85,11 @@ class Candlestick(BaseModel):
 
     @classmethod
     def update_db_with_new_candlesticks(cls, tickers, period, interval, start=None, end=None):
-        print("Updating database...")
+        # print("Updating database...")
         df = cls.__download_yahoo_candlestics(
             tickers, period, interval, start, end)
 
-        cls.save(df)
+        return cls.save(df)
 
     @staticmethod
     def __download_yahoo_candlestics(tickers, period, interval, start=None, end=None) -> pd.DataFrame:
@@ -106,7 +101,7 @@ class Candlestick(BaseModel):
             start=start,
             end=end
         )
-
+        # needs to be refactored doesnt support diffrent intervals than 5m
         last_cs = df.iloc[-1:]
         if last_cs.index.minute % 5 != 0:  # not 5m interval
             df = df[:-1]  # droping last row

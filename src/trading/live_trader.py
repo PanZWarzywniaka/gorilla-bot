@@ -27,7 +27,8 @@ class LiveTrader(Trader):
             historic_data_period,
             interval)
 
-        self.SLEEP_RATE = 5
+        self.SLEEP_RATE = 15
+        self.TIME_ZONE_OFFSET = datetime.timedelta(hours=2)
         self.ticker = ticker
         self.interval = interval
         self.main_loop()
@@ -43,6 +44,21 @@ class LiveTrader(Trader):
         print("Starting main loop")
         while True:
             self.__sleep(self.SLEEP_RATE)
-            Candlestick.update_db_with_new_candlesticks(
+
+            updated = Candlestick.update_db_with_new_candlesticks(
                 self.ticker, "1d", self.interval,
                 start=datetime.datetime.now() - datetime.timedelta(minutes=15))
+
+            if not updated:
+                continue
+
+            print("Got new candlestick!")
+
+            last_cs = Candlestick.get_last_row()
+            print(last_cs)
+
+            cs_time = last_cs.datetime
+            now = datetime.datetime.now() - self.TIME_ZONE_OFFSET
+            print(f"Time {cs_time=}")
+            print(f"Time {now=}")
+            print(f"Delay: {now-cs_time}")
