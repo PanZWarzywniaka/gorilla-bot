@@ -18,8 +18,6 @@ class CandlestickProcessor(object):
 
     @property
     def processed_data(self) -> pd.DataFrame:
-        print(self.data.columns)
-        print(self.data)
         return self.data
 
     def __process_data(self):

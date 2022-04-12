@@ -48,6 +48,19 @@ class Trader:
 
         print("Db cleared...")
 
+    def take_action(self, candlestick):
+        self.candlestick = candlestick
+        # rsi signal
+        if self.rsi_signal():
+            self.rsi_triggered = True
+        # buy
+        if self.buy_signal():
+            self.buy_all()
+
+        # sell
+        if self.stop_loss_signal() or self.take_profit_signal():
+            self.sell_all()
+
     def buy_all(self) -> bool:
 
         self.current_trade = Trade.create(buy_cs=self.candlestick.datetime)

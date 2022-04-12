@@ -69,3 +69,6 @@ class LiveTrader(Trader):
             self.__print_last_candlestick()
 
             self.data = Candlestick.get_processed_candlesticks()
+            last_candlestick = self.data.iloc[-1]
+            print(last_candlestick)
+            self.take_action(last_candlestick)

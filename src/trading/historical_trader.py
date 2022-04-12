@@ -34,20 +34,8 @@ class HistoricalTrader(Trader):
     def run_historical_simulation(self):
 
         df = self.data.reset_index()
-        for index, c in df.iterrows():
-
-            self.candlestick = c
-
-            # rsi signal
-            if self.rsi_signal():
-                self.rsi_triggered = True
-            # buy
-            if self.buy_signal():
-                self.buy_all()
-
-            # sell
-            if self.stop_loss_signal() or self.take_profit_signal():
-                self.sell_all()
+        for _, candlestick in df.iterrows():
+            self.take_action(candlestick)
 
         # end of time
         self.candlestick = df.iloc[-1]  # last candle stick
