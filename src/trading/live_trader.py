@@ -3,6 +3,7 @@ import datetime
 from models.candlestick import Candlestick
 from trader import Trader
 from models.trade import Trade
+from connector import Connector
 
 
 class LiveTrader(Trader):
@@ -32,6 +33,14 @@ class LiveTrader(Trader):
         self.ticker = ticker
         self.interval = interval
 
+        API_KEY_ID = "PK0JT3LM0J95OBVUKBM0"
+        API_SECRET_KEY = "gZPUTMLTQUG4qKx9hcSgPa3s8RkfmmA5DKhNAuSg"
+        API_URL = 'https://paper-api.alpaca.markets'
+        self.connector = Connector(API_URL, API_KEY_ID, API_SECRET_KEY)
+        # x = trader.request("GET", "/v2/account")
+        # trader.print_json(x.json())
+
+        print("Initilizing with historical data...")
         Candlestick.update_db_with_new_candlesticks(
             ticker, period=historic_data_period, interval=interval)
         self.main_loop()
@@ -47,8 +56,8 @@ class LiveTrader(Trader):
 
         cs_time = last_cs['datetime']
         now = datetime.datetime.now() - self.TIME_ZONE_OFFSET
-        print(f"Time {cs_time.__str__()}")
-        print(f"Time {now.__str__()}")
+        print(f"Candlestick time: {cs_time.__str__()}")
+        print(f"Now: {now.__str__()}")
         print(f"Delay: {now-cs_time}")
         print(last_cs)
 
@@ -69,3 +78,4 @@ class LiveTrader(Trader):
             last_candlestick = self.data.reset_index().iloc[-1]
             self.__print_last_candlestick(last_candlestick)
             self.take_action(last_candlestick)
+            self.print_stats()

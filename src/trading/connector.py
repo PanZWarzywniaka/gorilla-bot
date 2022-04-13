@@ -29,17 +29,3 @@ class Connector:
         #     return requests.post(self.url_base+url, json=json, auth=self.auth)
 
         return None
-
-    def print_delay(self, timestamp):
-
-        now = time.time()
-        print(f"Machine time: {now}")
-
-        print(f"Server time: {timestamp}")
-
-        diff = abs(now-timestamp)
-        print(f"Time diff: {diff} ms.")
-        diff /= 1000
-        print(f"Time diff: {diff} s.")
-        diff /= 60
-        print(f"Time diff: {diff} min.")
