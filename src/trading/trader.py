@@ -63,7 +63,7 @@ class Trader:
 
     def buy_all(self) -> bool:
 
-        self.current_trade = Trade.create(buy_cs=self.candlestick.datetime)
+        self.current_trade = Trade.create(buy_cs=self.candlestick['datetime'])
 
         price_for_asset = self.candlestick["open"]
         self.asset = self.dollars/price_for_asset
@@ -78,7 +78,7 @@ class Trader:
         price_for_asset = self.candlestick["open"]
         self.dollars = self.asset*price_for_asset
         self.asset = 0
-        self.current_trade.sell_cs = self.candlestick.datetime
+        self.current_trade.sell_cs = self.candlestick['datetime']
         self.current_trade.save()
 
         self.__reset_variables()

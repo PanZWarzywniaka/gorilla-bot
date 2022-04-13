@@ -43,15 +43,14 @@ class LiveTrader(Trader):
             time.sleep(1)
         print("Waking up")
 
-    def __print_last_candlestick(self):
-        last_cs = Candlestick.get_last()
-        print(last_cs)
+    def __print_last_candlestick(self, last_cs):
 
-        cs_time = last_cs.datetime
+        cs_time = last_cs['datetime']
         now = datetime.datetime.now() - self.TIME_ZONE_OFFSET
-        print(f"Time {cs_time=}")
-        print(f"Time {now=}")
+        print(f"Time {cs_time.__str__()}")
+        print(f"Time {now.__str__()}")
         print(f"Delay: {now-cs_time}")
+        print(last_cs)
 
     def main_loop(self):
         print("Starting main loop")
@@ -66,9 +65,7 @@ class LiveTrader(Trader):
                 continue
 
             print("Got new candlestick!")
-            self.__print_last_candlestick()
-
             self.data = Candlestick.get_processed_candlesticks()
-            last_candlestick = self.data.iloc[-1]
-            print(last_candlestick)
+            last_candlestick = self.data.reset_index().iloc[-1]
+            self.__print_last_candlestick(last_candlestick)
             self.take_action(last_candlestick)
