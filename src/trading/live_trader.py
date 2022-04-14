@@ -3,7 +3,7 @@ import datetime
 from models.candlestick import Candlestick
 from trader import Trader
 from models.trade import Trade
-from connector import Connector
+from connectors.alpaca_connector import AlpacaConnector
 
 
 class LiveTrader(Trader):
@@ -36,7 +36,7 @@ class LiveTrader(Trader):
         API_KEY_ID = "PK0JT3LM0J95OBVUKBM0"
         API_SECRET_KEY = "gZPUTMLTQUG4qKx9hcSgPa3s8RkfmmA5DKhNAuSg"
         API_URL = 'https://paper-api.alpaca.markets'
-        self.connector = Connector(API_URL, API_KEY_ID, API_SECRET_KEY)
+        self.connector = AlpacaConnector(API_URL, API_KEY_ID, API_SECRET_KEY)
         # x = trader.request("GET", "/v2/account")
         # trader.print_json(x.json())
 
