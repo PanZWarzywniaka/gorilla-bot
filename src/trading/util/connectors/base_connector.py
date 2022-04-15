@@ -4,7 +4,7 @@ import requests
 
 class BaseConnector():
 
-    def request(self, verb: str, endpoint: str, json=None, params=None):
+    def request(self, verb: str, endpoint: str, params=None, json=None):
         if json is None:
             json = {}
 
@@ -12,8 +12,8 @@ class BaseConnector():
             params = {}
 
         if verb.upper() == "GET":
-            return requests.get(self.url_base+endpoint, headers=self.headers, json=json)
-        print(params)
+            return requests.get(self.url_base+endpoint, headers=self.headers, params=params)
+
         if verb.upper() == "POST":
             return requests.post(self.url_base+endpoint, headers=self.headers, json=json)
 
@@ -24,3 +24,6 @@ class BaseConnector():
 
     @abstractmethod
     def place_sell_order(self, symbol: str, qty: int): pass
+
+    @abstractmethod
+    def list_of_orders(self): pass
