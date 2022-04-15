@@ -48,7 +48,7 @@ class Trader:
         Candlestick.clear_table()
 
         print("Db cleared...")
-
+    # has already processed data, called in intervals based on landlestick length
     def take_action(self, candlestick):
         self.candlestick = candlestick
         # rsi signal
