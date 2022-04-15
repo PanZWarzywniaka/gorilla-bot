@@ -1,7 +1,7 @@
 # external
+from abc import abstractmethod
 from datetime import datetime
-import json
-
+import math
 # owm
 from util.visualizer import Visualizer
 from models.trade import Trade
@@ -21,6 +21,7 @@ class Trader:
                  ticker="BTC-USD",
                  period="7d",
                  interval="5m",
+                 qty_increment_decimal_points=4
                  ) -> None:
 
         # initialize variables
@@ -29,10 +30,10 @@ class Trader:
         self.take_profit_ratio = take_profit_ratio
         self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
+        self.qty_increment_decimal_points = qty_increment_decimal_points
 
         self.rsi_triggered = False
         self.current_trade = None
-
         # database work
         if clear_db:
             self.__clear_database()
@@ -41,19 +42,11 @@ class Trader:
             Candlestick.update_db_with_new_candlesticks(
                 ticker, period, interval)
 
-    def __clear_database(self):
-        print("Clearing db...")
-
-        Trade.clear_table()
-        Candlestick.clear_table()
-
-        print("Db cleared...")
-    # has already processed data, called in intervals based on landlestick length
-    def take_action(self, candlestick):
-        self.candlestick = candlestick
+    def take_action(self):
         # rsi signal
         if self.rsi_signal():
             self.rsi_triggered = True
+
         # buy
         if self.buy_signal():
             self.buy_all()
@@ -62,28 +55,11 @@ class Trader:
         if self.stop_loss_signal() or self.take_profit_signal():
             self.sell_all()
 
-    def buy_all(self) -> bool:
+    @abstractmethod
+    def buy_all(self) -> bool: pass
 
-        self.current_trade = Trade.create(buy_cs=self.candlestick['datetime'])
-
-        price_for_asset = self.candlestick["open"]
-        self.asset = self.dollars/price_for_asset
-        self.dollars = 0
-
-        return True
-
-    def sell_all(self) -> bool:
-        if self.current_trade is None:
-            return False
-
-        price_for_asset = self.candlestick["open"]
-        self.dollars = self.asset*price_for_asset
-        self.asset = 0
-        self.current_trade.sell_cs = self.candlestick['datetime']
-        self.current_trade.save()
-
-        self.__reset_variables()
-        return True
+    @abstractmethod
+    def sell_all(self) -> bool: pass
 
     def rsi_signal(self) -> bool:
         return self.candlestick['rsi'] < self.rsi_threshold
@@ -101,34 +77,29 @@ class Trader:
 
         return self.__can_sell() and \
             self.current_trade.potential_return(
-                c['open']) <= -self.stop_loss_ratio
+                c['close']) <= -self.stop_loss_ratio
 
     def take_profit_signal(self) -> bool:
         c = self.candlestick
 
         return self.__can_sell() and \
             self.current_trade.potential_return(
-                c['open']) >= self.take_profit_ratio
+                c['close']) >= self.take_profit_ratio
 
-    def __reset_variables(self):
-        self.price_at_entry = None
+    def reset_variables(self):
         self.rsi_triggered = False
         self.current_trade = None
 
     def __can_buy(self) -> bool:
-        if self.dollars == 0:
-            return False
-
-        if self.current_trade is not None:
-            return False
-
-        return True
+        return self.current_trade is None  # we can buy, we don't have open position
 
     def __can_sell(self) -> bool:
-        if self.asset == 0:
-            return False
+        return self.current_trade is not None  # we can sell, if we have open position
 
-        return True
+        # ensures that the amount of asset we want to buy (qty) is up to qty_increment_decimal_points
+    def round_quantity_down(self, qty: float) -> float:
+        factor = 10 ** self.qty_increment_decimal_points
+        return math.floor(qty * factor) / factor
 
     def make_charts(self, start: datetime = None, end: datetime = None):
         Visualizer(self.data, self.rsi_threshold, start, end)
@@ -136,3 +107,11 @@ class Trader:
     def print_stats(self) -> None:
         Trade.print_stats()
         Candlestick.print_stats()
+
+    def __clear_database(self):
+        print("Clearing db...")
+
+        Trade.clear_table()
+        Candlestick.clear_table()
+
+        print("Db cleared...")

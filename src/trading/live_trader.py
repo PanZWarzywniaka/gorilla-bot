@@ -17,6 +17,7 @@ class LiveTrader(Trader):
                  ticker="BTC-USD",
                  historic_data_period="60d",
                  interval="5m",
+                 qty_increment_decimal_points=4,
 
                  ) -> None:
         super().__init__(
@@ -29,7 +30,8 @@ class LiveTrader(Trader):
             rsi_threshold,
             ticker,
             historic_data_period,
-            interval)
+            interval,
+            qty_increment_decimal_points)
 
         self.connector = AlpacaConnector(api_url, api_key_id, api_secret_key)
         self.ticker = ticker
@@ -73,6 +75,7 @@ class LiveTrader(Trader):
             print("Got new candlestick!")
             self.data = Candlestick.get_processed_candlesticks()
             last_candlestick = self.data.reset_index().iloc[-1]
+            self.candlestick = last_candlestick
             self.__print_last_candlestick(last_candlestick)
-            self.take_action(last_candlestick)
+            self.take_action()
             self.print_stats()

@@ -76,10 +76,10 @@ class Visualizer:
         trade_list = list(self.trades.itertuples())
         for t in trade_list:
             # buy
-            self.fig.add_vline(t.buy_cs.datetime,
+            self.fig.add_vline(t.buy_datetime,
                                line_color="green", row=row, col=col)
             # sell
-            self.fig.add_vline(t.sell_cs.datetime,
+            self.fig.add_vline(t.sell_datetime,
                                line_color="red", row=row, col=col)
 
     def __prices_chart(self, row, col):  # 1st

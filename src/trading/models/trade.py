@@ -1,13 +1,18 @@
 from datetime import datetime
-from peewee import ForeignKeyField
+from peewee import FloatField, DateTimeField
 from models.candlestick import Candlestick
 from models.base_model import BaseModel
 import pandas as pd
 
 
 class Trade(BaseModel):
-    buy_cs = ForeignKeyField(Candlestick, unique=True, null=False)
-    sell_cs = ForeignKeyField(Candlestick, unique=True, null=True)
+
+    quantity = FloatField(null=False, index=True)
+    buy_price = FloatField(null=False, index=True)
+    buy_datetime = DateTimeField(null=False, unique=True, index=True)
+
+    sell_price = FloatField(null=True, index=True)
+    sell_datetime = DateTimeField(null=True, unique=True, index=True)
 
     @staticmethod
     def load(start: datetime = None, end: datetime = None) -> pd.DataFrame:
@@ -15,14 +20,17 @@ class Trade(BaseModel):
         query = Trade.select()
 
         if start is not None:
-            query = query.where(Trade.buy_cs >= start)
+            query = query.where(Trade.buy_datetime >= start)
 
         if end is not None:
-            query = query.where(Trade.buy_cs <= end)
+            query = query.where(Trade.buy_datetime <= end)
 
         columns = {
-            'buy_cs': [t.buy_cs for t in query],
-            'sell_cs': [t.sell_cs for t in query],
+            'quantity': [t.quantity for t in query],
+            'buy_price': [t.buy_price for t in query],
+            'buy_datetime': [t.buy_datetime for t in query],
+            'sell_price': [t.sell_price for t in query],
+            'sell_datetime': [t.sell_datetime for t in query],
         }
 
         df = pd.DataFrame(columns, index=[t.id for t in query])
@@ -30,8 +38,14 @@ class Trade(BaseModel):
         return df
 
     def __str__(self):
-        info = f"\nBought at: {self.buy_cs}\n"
-        info += f"Sold at: {self.sell_cs}\n"
+        info = f"\nBought: {self.quantity}\n"
+        info += f"For: {self.buy_price} USD per asset\n"
+        info += f"At: {self.buy_datetime}\n"
+
+        if self.sell_price and self.sell_datetime is not None:
+            info += f"Sold for: {self.sell_price} USD per asset\n"
+            info += f"At: {self.sell_datetime}\n"
+
         return info
 
     @classmethod
@@ -41,11 +55,12 @@ class Trade(BaseModel):
 
         result = 1
         for t in trades:
-            t_return = t.calculate_return()
-            result *= t_return
+            t_yield = t.get_yield()
+            result *= t_yield
 
-            gain = (t_return-1)*100  # as percent
-            print(t, f"This trade return: {gain} %")
+            gain = (t_yield-1)*100  # as percent
+            print(t, end='')
+            print(f"This trade gain: {gain} %")
 
         print(f"\nTOTAL Calculated profit: {result}")
 
@@ -53,11 +68,8 @@ class Trade(BaseModel):
     def get_last(cls):
         cls.select().order_by(cls.id.desc()).get()
 
-    def calculate_return(self):
-        sell_price = self.sell_cs.open
-        buy_price = self.buy_cs.open
-        return sell_price/buy_price
+    def get_yield(self):
+        return self.sell_price/self.buy_price
 
     def potential_return(self, sell_price):
-        buy_price = self.buy_cs.open
-        return 100*(sell_price/buy_price-1)
+        return 100*(sell_price/self.buy_price-1)
