@@ -20,7 +20,8 @@ class Trader:
                  rsi_threshold=30,
                  ticker="BTC-USD",
                  period="7d",
-                 interval="5m") -> None:
+                 interval="5m",
+                 ) -> None:
 
         # initialize variables
         self.dollars = dollars

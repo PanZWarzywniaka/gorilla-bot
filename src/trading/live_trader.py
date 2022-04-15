@@ -8,6 +8,7 @@ from util.connectors.alpaca_connector import AlpacaConnector
 
 class LiveTrader(Trader):
     def __init__(self,
+                 api_key_id, api_secret_key, api_url,
                  dollars=100,
                  starting_asset=0,
                  take_profit_ratio=2,
@@ -15,7 +16,9 @@ class LiveTrader(Trader):
                  rsi_threshold=30,
                  ticker="BTC-USD",
                  historic_data_period="60d",
-                 interval="5m") -> None:
+                 interval="5m",
+
+                 ) -> None:
         super().__init__(
             True,   # clear_db
             True,   # update_db
@@ -28,17 +31,11 @@ class LiveTrader(Trader):
             historic_data_period,
             interval)
 
-        self.SLEEP_RATE = 10
-        self.TIME_ZONE_OFFSET = datetime.timedelta(hours=2)
+        self.connector = AlpacaConnector(api_url, api_key_id, api_secret_key)
         self.ticker = ticker
         self.interval = interval
-
-        API_KEY_ID = "PK0JT3LM0J95OBVUKBM0"
-        API_SECRET_KEY = "gZPUTMLTQUG4qKx9hcSgPa3s8RkfmmA5DKhNAuSg"
-        API_URL = 'https://paper-api.alpaca.markets'
-        self.connector = AlpacaConnector(API_URL, API_KEY_ID, API_SECRET_KEY)
-        # x = trader.request("GET", "/v2/account")
-        # trader.print_json(x.json())
+        self.SLEEP_RATE = 10
+        self.TIME_ZONE_OFFSET = datetime.timedelta(hours=2)
 
         print("Initilizing with historical data...")
         Candlestick.update_db_with_new_candlesticks(

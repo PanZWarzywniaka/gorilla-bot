@@ -4,7 +4,8 @@ from live_trader import LiveTrader
 
 
 def main():
-
+    ticker = "BCH-USD"
+    interval = "5m"
     trader = HistoricalTrader(
         clear_db=True,
         update_db=True,  # downloads candle sticks from the internet
@@ -16,19 +17,21 @@ def main():
         stop_loss_ratio=1,
         rsi_threshold=30,
 
-        ticker="BTC-USD",
+        ticker=ticker,
         period="7d",
-        interval="5m"
+        interval=interval
     )
 
-    # trader.make_charts(
-    #     # start=datetime(2022, 4, 2),
-    #     # end=datetime(2022, 4, 6),
-    # )
-
-    trader = LiveTrader(dollars=100, starting_asset=0,
+    trader.make_charts(
+        # start=datetime(2022, 4, 2),
+        # end=datetime(2022, 4, 6),
+    )
+    trader = LiveTrader(api_key_id="PKC5LZY4HEJ9BL9EGHXE",
+                        api_secret_key="gJsV346k4dhS65hvWvj58Knlb5wfgMLjLPgGTeNZ",
+                        api_url='https://paper-api.alpaca.markets',
+                        dollars=100, starting_asset=0,
                         take_profit_ratio=3, stop_loss_ratio=1, rsi_threshold=30,
-                        ticker="BTC-USD", historic_data_period="60d")
+                        ticker=ticker, historic_data_period="60d", interval=interval)
 
 
 if __name__ == '__main__':
