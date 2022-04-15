@@ -1,5 +1,5 @@
 import requests
-from connectors.base_connector import BaseConnector
+from util.connectors.base_connector import BaseConnector
 
 
 class AlpacaConnector(BaseConnector):

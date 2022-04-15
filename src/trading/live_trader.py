@@ -3,7 +3,7 @@ import datetime
 from models.candlestick import Candlestick
 from trader import Trader
 from models.trade import Trade
-from connectors.alpaca_connector import AlpacaConnector
+from util.connectors.alpaca_connector import AlpacaConnector
 
 
 class LiveTrader(Trader):

@@ -1,7 +1,7 @@
 from datetime import tzinfo
 import pytz
 from .base_model import BaseModel
-from .processors.candlestick_processor import CandlestickProcessor
+from util.processors.candlestick_processor import CandlestickProcessor
 from peewee import DateTimeField, FloatField
 import pandas as pd
 import yfinance as yf

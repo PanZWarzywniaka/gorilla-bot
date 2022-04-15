@@ -1,4 +1,4 @@
-from connectors.alpaca_connector import AlpacaConnector
+from util.connectors.alpaca_connector import AlpacaConnector
 
 API_KEY_ID = "PKC5LZY4HEJ9BL9EGHXE"
 API_SECRET_KEY = "gJsV346k4dhS65hvWvj58Knlb5wfgMLjLPgGTeNZ"
