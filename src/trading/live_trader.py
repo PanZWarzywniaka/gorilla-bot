@@ -135,3 +135,12 @@ class LiveTrader(Trader):
             self.__print_last_candlestick(last_candlestick)
             self.take_action()
             self.print_stats()
+
+    def print_stats(self):
+        super().print_stats()
+        print("Live Trader status:")
+        print(f"-{self.dollars} USD")
+        print(f"-{self.quantity} {self.symbol}")
+        print(f"-RSI triggered: {self.rsi_triggered}")
+        print(f"Current trade:")
+        print(self.current_trade)

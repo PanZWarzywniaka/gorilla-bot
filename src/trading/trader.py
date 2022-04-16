@@ -46,7 +46,6 @@ class Trader:
         # rsi signal
         if self.rsi_signal():
             self.rsi_triggered = True
-            print("RSI triggered")
 
         # buy
         if self.buy_signal():

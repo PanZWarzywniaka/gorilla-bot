@@ -55,12 +55,14 @@ class Trade(BaseModel):
 
         result = 1
         for t in trades:
-            t_yield = t.get_yield()
-            result *= t_yield
-
-            gain = (t_yield-1)*100  # as percent
             print(t, end='')
-            print(f"This trade gain: {gain} %")
+            if t.sell_price is not None:
+                t_yield = t.get_yield()
+
+                result *= t_yield
+                gain = (t_yield-1)*100  # as percent
+
+                print(f"This trade gain: {gain} %")
 
         print(f"\nTOTAL Calculated profit: {result}")
 
