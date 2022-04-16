@@ -9,7 +9,7 @@ class HistoricalTrader(Trader):
                  clear_db=True,
                  update_db=True,
                  dollars=100,
-                 starting_asset=0,
+                 starting_quantity=0,
                  take_profit_ratio=2,
                  stop_loss_ratio=1,
                  rsi_threshold=30,
@@ -20,7 +20,7 @@ class HistoricalTrader(Trader):
         super().__init__(clear_db,
                          update_db,
                          dollars,
-                         starting_asset,
+                         starting_quantity,
                          take_profit_ratio,
                          stop_loss_ratio,
                          rsi_threshold,
@@ -49,11 +49,11 @@ class HistoricalTrader(Trader):
 
     def sell_all(self) -> bool:
 
-        price_for_asset = self.candlestick["close"]
-        self.dollars += self.quantity*price_for_asset
+        price_for_quantity = self.candlestick["close"]
+        self.dollars += self.quantity*price_for_quantity
         self.quantity = 0
         self.current_trade.sell_datetime = self.candlestick['datetime']
-        self.current_trade.sell_price = price_for_asset
+        self.current_trade.sell_price = price_for_quantity
         self.current_trade.save()
 
         self.reset_variables()

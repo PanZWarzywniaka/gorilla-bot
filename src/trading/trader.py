@@ -14,7 +14,7 @@ class Trader:
                  clear_db=True,
                  update_db=True,
                  dollars=100,
-                 starting_asset=0,
+                 starting_quantity=0,
                  take_profit_ratio=2,
                  stop_loss_ratio=1,
                  rsi_threshold=30,
@@ -26,7 +26,7 @@ class Trader:
 
         # initialize variables
         self.dollars = dollars
-        self.asset = starting_asset
+        self.quantity = starting_quantity
         self.take_profit_ratio = take_profit_ratio
         self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
@@ -96,7 +96,7 @@ class Trader:
     def __can_sell(self) -> bool:
         return self.current_trade is not None  # we can sell, if we have open position
 
-        # ensures that the amount of asset we want to buy (qty) is up to qty_increment_decimal_points
+        # ensures that the quantity we want to buy (qty) is up to qty_increment_decimal_points
     def round_quantity_down(self, qty: float) -> float:
         factor = 10 ** self.qty_increment_decimal_points
         return math.floor(qty * factor) / factor

@@ -10,7 +10,7 @@ class LiveTrader(Trader):
     def __init__(self,
                  api_key_id, api_secret_key, api_url,
                  dollars=100,
-                 starting_asset=0,
+                 starting_quantity=0,
                  take_profit_ratio=2,
                  stop_loss_ratio=1,
                  rsi_threshold=30,
@@ -24,7 +24,7 @@ class LiveTrader(Trader):
             True,   # clear_db
             True,   # update_db
             dollars,
-            starting_asset,
+            starting_quantity,
             take_profit_ratio,
             stop_loss_ratio,
             rsi_threshold,
@@ -79,7 +79,7 @@ class LiveTrader(Trader):
         print(f"We spent: {spent} USD")
 
         buy_price = float(order_info['filled_avg_price'])
-        self.quantity = float(order_info['filled_qty'])
+        self.quantity += float(order_info['filled_qty'])
         # substruct what we paied for the asset
         self.dollars -= spent
 

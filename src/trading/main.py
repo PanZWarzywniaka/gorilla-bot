@@ -11,7 +11,7 @@ def main():
     #     clear_db=True,
     #     update_db=True,  # downloads candle sticks from the internet
     #     dollars=100,
-    #     starting_asset=0,
+    #     starting_quantity=0,
 
     #     # as percent of entry money
     #     take_profit_ratio=3,
@@ -31,7 +31,7 @@ def main():
     trader = LiveTrader(api_key_id="PKKPR2VCDRVJMNQRU28I",
                         api_secret_key="SCK7qLTue01DYG0oWON8Nk5aSWli1f578e1E5fVa",
                         api_url='https://paper-api.alpaca.markets',
-                        dollars=100, starting_asset=0,
+                        dollars=100, starting_quantity=0,
                         take_profit_ratio=3, stop_loss_ratio=1, rsi_threshold=30,
                         ticker=ticker, historic_data_period="60d", interval=interval,
                         qty_increment_decimal_points=qty_increment_decimal_points)
