@@ -28,8 +28,8 @@ def main():
     #     # start=datetime(2022, 4, 2),
     #     # end=datetime(2022, 4, 6),
     # )
-    trader = LiveTrader(api_key_id="PKC5LZY4HEJ9BL9EGHXE",
-                        api_secret_key="gJsV346k4dhS65hvWvj58Knlb5wfgMLjLPgGTeNZ",
+    trader = LiveTrader(api_key_id="PKKPR2VCDRVJMNQRU28I",
+                        api_secret_key="SCK7qLTue01DYG0oWON8Nk5aSWli1f578e1E5fVa",
                         api_url='https://paper-api.alpaca.markets',
                         dollars=100, starting_asset=0,
                         take_profit_ratio=3, stop_loss_ratio=1, rsi_threshold=30,
