@@ -33,6 +33,8 @@ class LiveTrader(Trader):
             interval,
             qty_increment_decimal_points)
 
+        # transforms e.g "BTC-USD" to "BTCUSD"
+        self.symbol = ticker.replace("-", "")
         self.connector = AlpacaConnector(api_url, api_key_id, api_secret_key)
         self.ticker = ticker
         self.interval = interval
@@ -59,6 +61,60 @@ class LiveTrader(Trader):
         print(f"Now: {now.__str__()}")
         print(f"Delay: {now-cs_time}")
         print(last_cs)
+
+    def buy_all(self) -> bool:
+        print(f"Buying asset for {self.dollars} USD")
+        order_info = self.connector.open_position(self.symbol, self.dollars)
+
+        if not order_info:
+            print("Opening position gone wrong. Quiting")
+            return False
+
+        print("Order filled!")
+        print(f"Tried to buy for {order_info['notional']} USD")
+        print(f"But bought {order_info['filled_qty']} {order_info['symbol']}")
+        print(f"For {order_info['filled_avg_price']}")
+        spent = float(order_info['filled_qty']) * \
+            float(order_info['filled_avg_price'])
+        print(f"We spent: {spent} USD")
+
+        buy_price = float(order_info['filled_avg_price'])
+        self.quantity = float(order_info['filled_qty'])
+        # substruct what we paied for the asset
+        self.dollars -= spent
+
+        self.current_trade = Trade.create(buy_price=buy_price,
+                                          quantity=self.quantity,
+                                          buy_datetime=datetime.datetime.now())
+
+        return True
+
+    def sell_all(self) -> bool:
+        print(f"Selling {self.quantity} of {self.symbol}...")
+        order_info = self.connector.close_position(self.symbol)
+        if not order_info:
+            print("Closing position gone wrong. Quiting")
+            return False
+
+        print("Order filled!")
+        print(
+            f"Sold {order_info['filled_qty']} {order_info['symbol']} USD")
+        print(f"For {order_info['filled_avg_price']}")
+
+        filled_quantity = float(order_info['filled_qty'])
+        sell_price = float(order_info['filled_avg_price'])
+        earned = filled_quantity * sell_price
+
+        print(f"Earned: {earned} USD")
+
+        self.dollars += earned
+        self.quantity -= filled_quantity
+        self.current_trade.sell_datetime = datetime.datetime.now()
+        self.current_trade.sell_price = sell_price
+        self.current_trade.save()
+
+        self.reset_variables()
+        return True
 
     def main_loop(self):
         print("Starting main loop")

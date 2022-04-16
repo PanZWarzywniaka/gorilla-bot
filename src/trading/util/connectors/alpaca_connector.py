@@ -16,7 +16,7 @@ class AlpacaConnector(BaseConnector):
             "time_in_force": "gtc",
         }
 
-    def place_buy_order(self, symbol: str, notional: int):
+    def place_buy_order(self, symbol: str, notional: float):
         data = {
             "symbol": symbol,
             "notional": str(notional),
@@ -24,7 +24,7 @@ class AlpacaConnector(BaseConnector):
         }
         return self.__place_order(data)
 
-    def place_sell_order(self, symbol: str, qty: int):
+    def place_sell_order(self, symbol: str, qty: float):
         data = {
             "symbol": symbol,
             "qty": str(qty),
@@ -42,17 +42,42 @@ class AlpacaConnector(BaseConnector):
         }
         return self.request("GET", "/v2/orders", params=params)
 
-    def get_order(self, order_id):
+    def get_order(self, order_id: str):
         return self.request("GET", f"/v2/orders/{order_id}")
 
-    def get_open_position(self, symbol):
+    def get_open_position(self, symbol: str):
         return self.request("GET", f"/v2/positions/{symbol}")
 
-    def close_position(self, symbol):
-        pos_req = self.get_open_position(symbol)
-        if not pos_req.ok:  # check if position request was ok
+    def is_filled(self, order_id: str, timeout=100):
+        for i in range(timeout):
+            print(f"Checking if it got filled for {i+1}. time")
+            order_info = self.get_order(order_id).json()
+            if order_info['filled_at'] is not None:
+                return order_info
+        return False
+
+    def close_position(self, symbol: str) -> bool:
+        position_req = self.get_open_position(symbol)
+        if not position_req.ok:  # check if position request was ok
             return False
 
-        pos_json = pos_req.json()
-        qty = pos_json['qty']
-        return self.place_sell_order(symbol, qty)
+        position_json = position_req.json()
+        qty = position_json['qty']
+        sell_req = self.place_sell_order(symbol, qty)
+        if not sell_req.ok:
+            return False
+        print("Placed sell order.")
+
+        order_id = sell_req.json()['id']
+        order_info = self.is_filled(order_id)
+        return order_info
+
+    def open_position(self, symbol: str, notional: float):  # returns order info
+        buy_req = self.place_buy_order(symbol, notional)
+        if not buy_req.ok:
+            return False
+        print("Placed buy order.")
+
+        order_id = buy_req.json()['id']
+        order_info = self.is_filled(order_id)
+        return order_info

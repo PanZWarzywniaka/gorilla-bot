@@ -92,20 +92,23 @@ class Candlestick(BaseModel):
         return cls.save(df)
 
     @staticmethod
-    def __download_yahoo_candlestics(tickers, period, interval, start=None, end=None) -> pd.DataFrame:
-
-        df = yf.download(
-            tickers=tickers,
-            period=period,
-            interval=interval,
-            start=start,
-            end=end
-        )
-        # needs to be refactored doesnt support diffrent intervals than 5m
-        last_cs = df.iloc[-1:]
-        if last_cs.index.minute % 5 != 0:  # not 5m interval
-            df = df[:-1]  # droping last row
-        return df
+    def __download_yahoo_candlestics(tickers, period, interval, start=None, end=None, timeout=10) -> pd.DataFrame:
+        for _ in range(timeout):
+            try:
+                df = yf.download(
+                    tickers=tickers,
+                    period=period,
+                    interval=interval,
+                    start=start,
+                    end=end
+                )
+                # needs to be refactored doesnt support diffrent intervals than 5m
+                last_cs = df.iloc[-1:]
+                if last_cs.index.minute % 5 != 0:  # not 5m interval
+                    df = df[:-1]  # droping last row
+                return df
+            except Exception:  # what ever gone wrong just try to download again
+                continue
 
     @classmethod
     def get_first(cls):
