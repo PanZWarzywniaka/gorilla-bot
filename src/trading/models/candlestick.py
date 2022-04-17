@@ -5,6 +5,7 @@ from util.processors.candlestick_processor import CandlestickProcessor
 from peewee import DateTimeField, FloatField
 import pandas as pd
 import yfinance as yf
+import time
 
 
 class Candlestick(BaseModel):
@@ -108,7 +109,7 @@ class Candlestick(BaseModel):
                     df = df[:-1]  # droping last row
                 return df
             except Exception:  # what ever gone wrong just try to download again
-                continue
+                time.sleep(10)
 
     @classmethod
     def get_first(cls):
