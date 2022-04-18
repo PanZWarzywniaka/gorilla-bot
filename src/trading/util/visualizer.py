@@ -4,15 +4,16 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import numpy as np
 from models.trade import Trade
+from models.candlestick import Candlestick
 
 
 class Visualizer:
 
-    def __init__(self, df, rsi_threshold, start: datetime = None, end: datetime = None):
-        self.df = df.loc[start:end]
+    def __init__(self, start: datetime = None, end: datetime = None):
+        self.df = Candlestick.get_processed_candlesticks().loc[start:end]
         self.trades = Trade.load(start, end)
 
-        self.rsi_threshold = rsi_threshold
+        self.rsi_threshold = 30
         self.__set_layout()
         # initialize 3x1 figure
         self.fig = subplots.make_subplots(
