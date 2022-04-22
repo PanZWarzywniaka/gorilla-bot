@@ -37,7 +37,6 @@ class LiveTrader(Trader):
         self.ticker = ticker
         self.interval = interval
         self.SLEEP_RATE = 10
-        self.TIME_ZONE_OFFSET = datetime.timedelta(hours=2)
 
         self.main_loop()
 
@@ -51,7 +50,7 @@ class LiveTrader(Trader):
     def __print_last_candlestick(self, last_cs):
 
         cs_time = last_cs['datetime']
-        now = datetime.datetime.utcnow() - self.TIME_ZONE_OFFSET
+        now = datetime.datetime.utcnow()
         print(f"Candlestick time: {cs_time.__str__()}")
         print(f"Now: {now.__str__()}")
         print(f"Delay: {now-cs_time}")
