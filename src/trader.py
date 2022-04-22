@@ -11,8 +11,6 @@ from models.trade import Candlestick
 class Trader:
 
     def __init__(self,
-                 clear_db=True,
-                 update_db=True,
                  dollars=100,
                  starting_quantity=0,
                  take_profit_ratio=2,
@@ -35,12 +33,10 @@ class Trader:
         self.rsi_triggered = False
         self.current_trade = None
         # database work
-        if clear_db:
-            self.__clear_database()
-
-        if update_db:
-            Candlestick.update_db_with_new_candlesticks(
-                ticker, period, interval)
+        self.__create_tables()
+        print("Initilizing with historical data...")
+        Candlestick.update_db_with_new_candlesticks(
+            ticker, period=period, interval=interval)
 
     def take_action(self):
         # rsi signal
@@ -115,3 +111,9 @@ class Trader:
         Candlestick.clear_table()
 
         print("Db cleared...")
+
+    def __create_tables(self):
+        print("Creating tables...")
+        Trade.create_table()
+        Candlestick.create_table()
+        print("Tables created.")

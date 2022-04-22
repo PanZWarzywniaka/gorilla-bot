@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  database:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=dupadupadupa
+      - MYSQL_DATABASE=trading
+  live_trader:
+    build: src/
+    depends_on:
+      - db
+    environment:
+      - Test=testing
+      - Test2=testing2
+    deploy:
+      restart_policy: #restart if database is not ready
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3

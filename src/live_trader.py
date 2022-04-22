@@ -21,8 +21,6 @@ class LiveTrader(Trader):
 
                  ) -> None:
         super().__init__(
-            True,   # clear_db
-            True,   # update_db
             dollars,
             starting_quantity,
             take_profit_ratio,
@@ -41,9 +39,6 @@ class LiveTrader(Trader):
         self.SLEEP_RATE = 10
         self.TIME_ZONE_OFFSET = datetime.timedelta(hours=2)
 
-        print("Initilizing with historical data...")
-        Candlestick.update_db_with_new_candlesticks(
-            ticker, period=historic_data_period, interval=interval)
         self.main_loop()
 
     def __sleep(self, duration):
@@ -56,7 +51,7 @@ class LiveTrader(Trader):
     def __print_last_candlestick(self, last_cs):
 
         cs_time = last_cs['datetime']
-        now = datetime.datetime.now() - self.TIME_ZONE_OFFSET
+        now = datetime.datetime.utcnow() - self.TIME_ZONE_OFFSET
         print(f"Candlestick time: {cs_time.__str__()}")
         print(f"Now: {now.__str__()}")
         print(f"Delay: {now-cs_time}")
