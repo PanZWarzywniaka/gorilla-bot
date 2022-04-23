@@ -8,7 +8,6 @@ from util.connectors.alpaca_connector import AlpacaConnector
 
 class LiveTrader(Trader):
     def __init__(self,
-                 api_key_id, api_secret_key, api_url,
                  dollars=100,
                  starting_quantity=0,
                  take_profit_ratio=2,
@@ -30,7 +29,7 @@ class LiveTrader(Trader):
 
         # transforms e.g "BTC-USD" to "BTCUSD"
         self.symbol = ticker.replace("-", "")
-        self.connector = AlpacaConnector(api_url, api_key_id, api_secret_key)
+        self.connector = AlpacaConnector()
         self.ticker = ticker
         self.interval = interval
         self.SLEEP_RATE = 10

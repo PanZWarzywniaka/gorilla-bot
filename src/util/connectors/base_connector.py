@@ -1,5 +1,6 @@
 from abc import abstractmethod
 import requests
+from os import environ
 
 
 class BaseConnector():
@@ -12,10 +13,10 @@ class BaseConnector():
             params = {}
 
         if verb.upper() == "GET":
-            return requests.get(self.url_base+endpoint, headers=self.headers, params=params)
+            return requests.get(environ.get('URL_BASE')+endpoint, headers=self.headers, params=params)
 
         if verb.upper() == "POST":
-            return requests.post(self.url_base+endpoint, headers=self.headers, json=json)
+            return requests.post(environ.get('URL_BASE')+endpoint, headers=self.headers, json=json)
 
         return None
 

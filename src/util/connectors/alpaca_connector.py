@@ -1,15 +1,16 @@
 import requests
 from util.connectors.base_connector import BaseConnector
+from os import environ
 
 
 class AlpacaConnector(BaseConnector):
 
-    def __init__(self, url_base, key_id, secret_key):
+    def __init__(self):
         super().__init__()
-        self.url_base = url_base
+
         self.headers = {
-            "APCA-API-KEY-ID": key_id,
-            "APCA-API-SECRET-KEY": secret_key
+            "APCA-API-KEY-ID": environ.get('ALPACA_KEY_ID'),
+            "APCA-API-SECRET-KEY": environ.get('ALPACA_SECRET_KEY'),
         }
         self.default_json = {
             "type": "market",
