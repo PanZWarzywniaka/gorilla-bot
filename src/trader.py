@@ -19,7 +19,6 @@ class Trader:
                  ticker="BTC-USD",
                  period="7d",
                  interval="5m",
-                 qty_increment_decimal_points=4
                  ) -> None:
 
         # initialize variables
@@ -28,7 +27,6 @@ class Trader:
         self.take_profit_ratio = take_profit_ratio
         self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
-        self.qty_increment_decimal_points = qty_increment_decimal_points
 
         self.rsi_triggered = False
         self.current_trade = None
@@ -91,11 +89,6 @@ class Trader:
 
     def __can_sell(self) -> bool:
         return self.current_trade is not None  # we can sell, if we have open position
-
-        # ensures that the quantity we want to buy (qty) is up to qty_increment_decimal_points
-    def round_quantity_down(self, qty: float) -> float:
-        factor = 10 ** self.qty_increment_decimal_points
-        return math.floor(qty * factor) / factor
 
     def make_charts(self, start: datetime = None, end: datetime = None):
         Visualizer(self.data, self.rsi_threshold, start, end)

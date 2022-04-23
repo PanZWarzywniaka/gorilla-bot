@@ -15,10 +15,8 @@ class LiveTrader(Trader):
                  stop_loss_ratio=1,
                  rsi_threshold=30,
                  ticker="BTC-USD",
-                 historic_data_period="60d",
                  interval="5m",
-                 qty_increment_decimal_points=4,
-
+                 historic_data_period="60d"
                  ) -> None:
         super().__init__(
             dollars,
@@ -28,8 +26,7 @@ class LiveTrader(Trader):
             rsi_threshold,
             ticker,
             historic_data_period,
-            interval,
-            qty_increment_decimal_points)
+            interval)
 
         # transforms e.g "BTC-USD" to "BTCUSD"
         self.symbol = ticker.replace("-", "")

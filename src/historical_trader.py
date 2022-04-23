@@ -23,9 +23,9 @@ class HistoricalTrader(Trader):
             rsi_threshold,
             ticker,
             period,
-            interval,
-            qty_increment_decimal_points)
+            interval)
 
+        self.qty_increment_decimal_points = qty_increment_decimal_points
         self.data = Candlestick.get_processed_candlesticks()
         self.run_historical_simulation()
         self.print_stats()
@@ -33,7 +33,7 @@ class HistoricalTrader(Trader):
     def buy_all(self) -> bool:
 
         buy_price = self.candlestick["close"]
-        self.quantity = self.round_quantity_down(self.dollars/buy_price)
+        self.quantity = self.__round_quantity_down(self.dollars/buy_price)
         # substruct what we paied for the asset
         self.dollars -= self.quantity*buy_price
 
@@ -66,3 +66,8 @@ class HistoricalTrader(Trader):
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
         print(f"MONEY: {self.dollars} $$$")
+
+    # ensures that the quantity we want to buy (qty) is up to qty_increment_decimal_points
+    def __round_quantity_down(self, qty: float) -> float:
+        factor = 10 ** self.qty_increment_decimal_points
+        return math.floor(qty * factor) / factor
