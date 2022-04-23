@@ -37,22 +37,6 @@ class LiveTrader(Trader):
 
         self.main_loop()
 
-    def __sleep(self, duration):
-        print(f"Sleeping: {duration}s", end=' ')
-        for _ in range(duration):
-            print(".", end=' ', flush=True)
-            time.sleep(1)
-        print("Waking up")
-
-    def __print_last_candlestick(self, last_cs):
-
-        cs_time = last_cs['datetime']
-        now = datetime.datetime.utcnow()
-        print(f"Candlestick time: {cs_time.__str__()}")
-        print(f"Now: {now.__str__()}")
-        print(f"Delay: {now-cs_time}")
-        print(last_cs)
-
     def buy_all(self) -> bool:
         print(f"Buying asset for {self.dollars} USD")
         order_info = self.connector.open_position(self.symbol, self.dollars)
@@ -140,3 +124,19 @@ class LiveTrader(Trader):
                 self.candlestick['close'])
             print(
                 f"Unrealised return: {unrealised_return} %")
+
+    def __sleep(self, duration):
+        print(f"Sleeping: {duration}s", end=' ')
+        for _ in range(duration):
+            print(".", end=' ', flush=True)
+            time.sleep(1)
+        print("Waking up")
+
+    def __print_last_candlestick(self, last_cs):
+
+        cs_time = last_cs['datetime']
+        now = datetime.datetime.utcnow()
+        print(f"Candlestick time: {cs_time.__str__()}")
+        print(f"Now: {now.__str__()}")
+        print(f"Delay: {now-cs_time}")
+        print(last_cs)
