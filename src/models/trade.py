@@ -58,11 +58,9 @@ class Trade(BaseModel):
             print(t, end='')
             if t.sell_price is not None:
                 t_yield = t.get_yield()
-
                 result *= t_yield
-                gain = (t_yield-1)*100  # as percent
 
-                print(f"This trade gain: {gain} %")
+                print(f"This trade yield: {t_yield} %")
 
         print(f"\nTOTAL Calculated profit: {result}")
 
@@ -71,7 +69,7 @@ class Trade(BaseModel):
         cls.select().order_by(cls.id.desc()).get()
 
     def get_yield(self):
-        return self.sell_price/self.buy_price
+        return 100*(self.sell_price/self.buy_price-1)
 
-    def potential_return(self, sell_price):
+    def get_potential_yield(self, sell_price):
         return 100*(sell_price/self.buy_price-1)

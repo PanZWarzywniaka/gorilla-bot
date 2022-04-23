@@ -72,14 +72,14 @@ class Trader:
         c = self.candlestick
 
         return self.__can_sell() and \
-            self.current_trade.potential_return(
+            self.current_trade.get_potential_yield(
                 c['close']) <= -self.stop_loss_ratio
 
     def take_profit_signal(self) -> bool:
         c = self.candlestick
 
         return self.__can_sell() and \
-            self.current_trade.potential_return(
+            self.current_trade.get_potential_yield(
                 c['close']) >= self.take_profit_ratio
 
     def reset_variables(self):

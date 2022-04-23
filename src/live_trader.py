@@ -79,7 +79,7 @@ class LiveTrader(Trader):
 
         self.current_trade = Trade.create(buy_price=buy_price,
                                           quantity=self.quantity,
-                                          buy_datetime=datetime.datetime.now())
+                                          buy_datetime=datetime.datetime.utcnow())
 
         return True
 
@@ -103,7 +103,7 @@ class LiveTrader(Trader):
 
         self.dollars += earned
         self.quantity -= filled_quantity
-        self.current_trade.sell_datetime = datetime.datetime.now()
+        self.current_trade.sell_datetime = datetime.datetime.utcnow()
         self.current_trade.sell_price = sell_price
         self.current_trade.save()
 
@@ -138,3 +138,8 @@ class LiveTrader(Trader):
         print(f"-RSI triggered: {self.rsi_triggered}")
         print(f"Current trade:")
         print(self.current_trade)
+        if self.current_trade:
+            unrealised_return = self.current_trade.get_potential_yield(
+                self.candlestick['close'])
+            print(
+                f"Unrealised return: {unrealised_return} %")
