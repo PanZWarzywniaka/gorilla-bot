@@ -14,8 +14,6 @@ def main():
     #     starting_quantity=0,
 
     #     # as percent of entry money
-    #     take_profit_ratio=2,
-    #     stop_loss_ratio=1,
     #     rsi_threshold=30,
 
     #     ticker=ticker,
@@ -26,8 +24,7 @@ def main():
     # Visualizer()
 
     trader = LiveTrader(
-        dollars=100, starting_quantity=0,
-        take_profit_ratio=2, stop_loss_ratio=1, rsi_threshold=30,
+        dollars=100, starting_quantity=0, rsi_threshold=30,
         ticker=ticker, interval=interval, historic_data_period="60d",)
 
 

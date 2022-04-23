@@ -8,8 +8,6 @@ class HistoricalTrader(Trader):
     def __init__(self,
                  dollars=100,
                  starting_quantity=0,
-                 take_profit_ratio=2,
-                 stop_loss_ratio=1,
                  rsi_threshold=30,
                  ticker="BTC-USD",
                  period="7d",
@@ -18,8 +16,6 @@ class HistoricalTrader(Trader):
         super().__init__(
             dollars,
             starting_quantity,
-            take_profit_ratio,
-            stop_loss_ratio,
             rsi_threshold,
             ticker,
             period,

@@ -6,6 +6,7 @@ import math
 from util.visualizer import Visualizer
 from models.trade import Trade
 from models.trade import Candlestick
+from os import environ
 
 
 class Trader:
@@ -13,8 +14,6 @@ class Trader:
     def __init__(self,
                  dollars=100,
                  starting_quantity=0,
-                 take_profit_ratio=2,
-                 stop_loss_ratio=1,
                  rsi_threshold=30,
                  ticker="BTC-USD",
                  period="7d",
@@ -24,8 +23,6 @@ class Trader:
         # initialize variables
         self.dollars = dollars
         self.quantity = starting_quantity
-        self.take_profit_ratio = take_profit_ratio
-        self.stop_loss_ratio = stop_loss_ratio
         self.rsi_threshold = rsi_threshold
 
         self.rsi_triggered = False
@@ -68,17 +65,19 @@ class Trader:
 
     def stop_loss_signal(self) -> bool:
         c = self.candlestick
+        stop_loss_ratio = float(environ.get('STOP_LOSS_RATIO'))
 
         return self.__can_sell() and \
             self.current_trade.get_potential_yield(
-                c['close']) <= -self.stop_loss_ratio
+                c['close']) <= -stop_loss_ratio
 
     def take_profit_signal(self) -> bool:
         c = self.candlestick
+        take_profit_ratio = float(environ.get('TAKE_PROFIT_RATIO'))
 
         return self.__can_sell() and \
             self.current_trade.get_potential_yield(
-                c['close']) >= self.take_profit_ratio
+                c['close']) >= take_profit_ratio
 
     def reset_variables(self):
         self.rsi_triggered = False

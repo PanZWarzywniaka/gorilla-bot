@@ -4,14 +4,13 @@ from models.candlestick import Candlestick
 from trader import Trader
 from models.trade import Trade
 from util.connectors.alpaca_connector import AlpacaConnector
+from os import environ
 
 
 class LiveTrader(Trader):
     def __init__(self,
                  dollars=100,
                  starting_quantity=0,
-                 take_profit_ratio=2,
-                 stop_loss_ratio=1,
                  rsi_threshold=30,
                  ticker="BTC-USD",
                  interval="5m",
@@ -20,8 +19,6 @@ class LiveTrader(Trader):
         super().__init__(
             dollars,
             starting_quantity,
-            take_profit_ratio,
-            stop_loss_ratio,
             rsi_threshold,
             ticker,
             historic_data_period,
@@ -115,6 +112,8 @@ class LiveTrader(Trader):
         print("Live Trader status:")
         print(f"-{self.dollars} USD")
         print(f"-{self.quantity} {self.symbol}")
+        print(f"-Take profit ratio: {environ('TAKE_PROFIT_RATIO')}")
+        print(f"-Stop loss ratio: {environ('STOP_LOSS_RATIO')}")
         print(f"-RSI triggered: {self.rsi_triggered}")
         print(f"Current trade:")
         print(self.current_trade)
