@@ -87,7 +87,7 @@ class Trader:
         self.current_trade = None
 
     def __can_buy(self) -> bool:
-        return self.current_trade is None  # we can buy, we don't have open position
+        return not self.current_trade  # we can buy, we don't have open position
 
     def __can_sell(self) -> bool:
         return self.current_trade is not None  # we can sell, if we have open position

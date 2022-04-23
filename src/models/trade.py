@@ -19,10 +19,10 @@ class Trade(BaseModel):
         print("Loading trades...")
         query = Trade.select()
 
-        if start is not None:
+        if start:
             query = query.where(Trade.buy_datetime >= start)
 
-        if end is not None:
+        if end:
             query = query.where(Trade.buy_datetime <= end)
 
         columns = {
@@ -57,7 +57,7 @@ class Trade(BaseModel):
         result = 1
         for t in trades:
             print(t, end='')
-            if t.sell_price is not None:
+            if t.sell_price:
                 t_yield = t.get_yield()
                 result *= t_yield
 

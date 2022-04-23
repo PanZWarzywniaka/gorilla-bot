@@ -52,7 +52,7 @@ class AlpacaConnector(BaseConnector):
         for i in range(timeout):
             print(f"Checking if it got filled for {i+1}. time")
             order_info = self.get_order(order_id).json()
-            if order_info['filled_at'] is not None:
+            if order_info['filled_at']:
                 return order_info
         return False
 

@@ -13,7 +13,7 @@ conn.close_position(symbol)
 # for i in range(100):
 #     print(i)
 #     order_info = conn.get_order(order_id).json()
-#     if order_info['filled_at'] is not None:
+#     if order_info['filled_at']:
 #         break
 
 
