@@ -42,9 +42,10 @@ class Trade(BaseModel):
         info += f"For: {self.buy_price} USD per asset\n"
         info += f"At: {self.buy_datetime}\n"
 
-        if self.sell_price and self.sell_datetime is not None:
+        if self.sell_price and self.sell_datetime:
             info += f"Sold for: {self.sell_price} USD per asset\n"
             info += f"At: {self.sell_datetime}\n"
+            info += f"Trade yield: {self.get_yield()} %"
 
         return info
 
