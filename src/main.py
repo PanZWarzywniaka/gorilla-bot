@@ -26,8 +26,8 @@ def main():
     # )
     # Visualizer()
 
-    trader = LiveTrader(api_key_id="PKD0O8AYXYV6KT363ZCY",
-                        api_secret_key="KJdYuQCd6OU2olYIEJrpOhgoGhb4T8AzJTNdlWrz",
+    trader = LiveTrader(api_key_id="PKZXWIBCZP1MXIQYK99S",
+                        api_secret_key="DM87JA8EBiJTQstmEyDlPOJvuTze1kcspYQTVOd9",
                         api_url='https://paper-api.alpaca.markets',
                         dollars=100, starting_quantity=0,
                         take_profit_ratio=2, stop_loss_ratio=1, rsi_threshold=30,
