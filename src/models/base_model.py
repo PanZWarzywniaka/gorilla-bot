@@ -1,11 +1,12 @@
 from abc import abstractmethod
 from peewee import MySQLDatabase
 from peewee import Model
+from os import environ
 
 
 class BaseModel(Model):
     class Meta:
-        database = MySQLDatabase('trading', user='root', password='dupadupadupa',
+        database = MySQLDatabase(environ.get('MYSQL_DATABASE'), user='root', password=environ.get('MYSQL_ROOT_PASSWORD'),
                                  host="database", port=3306)
         connected = database.connect()
 
