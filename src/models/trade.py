@@ -1,6 +1,5 @@
 from datetime import datetime
 from peewee import FloatField, DateTimeField
-from models.candlestick import Candlestick
 from models.base_model import BaseModel
 import pandas as pd
 
