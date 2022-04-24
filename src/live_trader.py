@@ -9,12 +9,12 @@ from os import environ
 
 class LiveTrader(Trader):
     def __init__(self,
-                 dollars=100,
-                 starting_quantity=0,
-                 rsi_threshold=30,
-                 ticker="BTC-USD",
-                 interval="5m",
-                 historic_data_period="60d"
+                 dollars,
+                 starting_quantity,
+                 rsi_threshold,
+                 ticker,
+                 interval,
+                 historic_data_period
                  ) -> None:
         super().__init__(
             dollars,
@@ -24,10 +24,9 @@ class LiveTrader(Trader):
             historic_data_period,
             interval)
 
-        # transforms e.g "BTC-USD" to "BTCUSD"
-        self.symbol = ticker.replace("-", "")
-        self.connector = AlpacaConnector()
         self.ticker = ticker
+        self.ticker_alpaca = ticker+"USD"  # from e.g "XXX" to "XXXUSD"
+        self.connector = AlpacaConnector()
         self.interval = interval
         self.SLEEP_RATE = 10
 
@@ -35,7 +34,8 @@ class LiveTrader(Trader):
 
     def buy_all(self) -> bool:
         print(f"Buying asset for {self.dollars} USD")
-        order_info = self.connector.open_position(self.symbol, self.dollars)
+        order_info = self.connector.open_position(
+            self.ticker_alpaca, self.dollars)
 
         if not order_info:
             print("Opening position gone wrong. Quiting")
@@ -61,8 +61,8 @@ class LiveTrader(Trader):
         return True
 
     def sell_all(self) -> bool:
-        print(f"Selling {self.quantity} of {self.symbol}...")
-        order_info = self.connector.close_position(self.symbol)
+        print(f"Selling {self.quantity} of {self.ticker}...")
+        order_info = self.connector.close_position(self.ticker_alpaca)
         if not order_info:
             print("Closing position gone wrong. Quiting")
             return False
@@ -111,7 +111,7 @@ class LiveTrader(Trader):
         super().print_stats()
         print("Live Trader status:")
         print(f"-{self.dollars} USD")
-        print(f"-{self.quantity} {self.symbol}")
+        print(f"-{self.quantity} {self.ticker}")
         print(f"-Take profit ratio: {environ.get('TAKE_PROFIT_RATIO')}")
         print(f"-Stop loss ratio: {environ.get('STOP_LOSS_RATIO')}")
         print(f"-RSI triggered: {self.rsi_triggered}")

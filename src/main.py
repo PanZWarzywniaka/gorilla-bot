@@ -1,11 +1,11 @@
-from datetime import datetime
 from historical_trader import HistoricalTrader
 from live_trader import LiveTrader
 from util.visualizer import Visualizer
+from os import environ
 
 
 def main():
-    ticker = "BCH-USD"
+    ticker = environ.get('TICKER')
     interval = "5m"
     # trader = HistoricalTrader(
     #     clear_db=True,

@@ -12,12 +12,12 @@ from os import environ
 class Trader:
 
     def __init__(self,
-                 dollars=100,
-                 starting_quantity=0,
-                 rsi_threshold=30,
-                 ticker="BTC-USD",
-                 period="7d",
-                 interval="5m",
+                 dollars,
+                 starting_quantity,
+                 rsi_threshold,
+                 ticker,
+                 period,
+                 interval,
                  ) -> None:
 
         # initialize variables
@@ -31,7 +31,7 @@ class Trader:
         self.__create_tables()
         print("Initilizing with historical data...")
         Candlestick.update_db_with_new_candlesticks(
-            ticker, period=period, interval=interval)
+            ticker=ticker, period=period, interval=interval)
 
     def take_action(self):
         # rsi signal
