@@ -5,8 +5,6 @@ from os import environ
 
 
 def main():
-    ticker = environ.get('TICKER')
-    interval = "5m"
     # trader = HistoricalTrader(
     #     clear_db=True,
     #     update_db=True,  # downloads candle sticks from the internet
@@ -25,7 +23,9 @@ def main():
 
     trader = LiveTrader(
         dollars=100, starting_quantity=0, rsi_threshold=30,
-        ticker=ticker, interval=interval, historic_data_period="60d",)
+        ticker=environ.get('TICKER'),
+        interval=environ.get('INTERVAL'),
+        historic_data_period=environ.get('PERIOD'),)
 
 
 if __name__ == '__main__':
