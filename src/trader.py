@@ -13,7 +13,6 @@ class Trader:
 
     def __init__(self,
                  dollars,
-                 starting_quantity,
                  ticker,
                  period,
                  interval,
@@ -21,7 +20,7 @@ class Trader:
 
         # initialize variables
         self.dollars = dollars
-        self.quantity = starting_quantity
+        self.quantity = 0
 
         self.rsi_triggered = False
         self.current_trade = None

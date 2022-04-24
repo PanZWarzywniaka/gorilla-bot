@@ -10,14 +10,12 @@ from os import environ
 class LiveTrader(Trader):
     def __init__(self,
                  dollars,
-                 starting_quantity,
                  ticker,
                  interval,
                  historic_data_period
                  ) -> None:
         super().__init__(
             dollars,
-            starting_quantity,
             ticker,
             historic_data_period,
             interval)

@@ -9,7 +9,6 @@ def main():
     #     clear_db=True,
     #     update_db=True,  # downloads candle sticks from the internet
     #     dollars=100,
-    #     starting_quantity=0,
 
     #     # as percent of entry money
     #
@@ -22,7 +21,7 @@ def main():
     # Visualizer()
 
     trader = LiveTrader(
-        dollars=100, starting_quantity=0,
+        dollars=100,
         ticker=environ.get('TICKER'),
         interval=environ.get('INTERVAL'),
         historic_data_period=environ.get('PERIOD'),)

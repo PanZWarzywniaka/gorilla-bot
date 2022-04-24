@@ -7,14 +7,12 @@ import math
 class HistoricalTrader(Trader):
     def __init__(self,
                  dollars,
-                 starting_quantity,
                  ticker,
                  period,
                  interval,
                  qty_increment_decimal_points) -> None:
         super().__init__(
             dollars,
-            starting_quantity,
             ticker,
             period,
             interval)
@@ -27,7 +25,7 @@ class HistoricalTrader(Trader):
     def buy_all(self) -> bool:
 
         buy_price = self.candlestick["close"]
-        self.quantity = self.__round_quantity_down(self.dollars/buy_price)
+        self.quantity += self.__round_quantity_down(self.dollars/buy_price)
         # substruct what we paied for the asset
         self.dollars -= self.quantity*buy_price
 
