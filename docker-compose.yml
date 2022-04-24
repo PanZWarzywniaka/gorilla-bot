@@ -3,17 +3,14 @@ services:
 
   database:
     image: mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
     env_file:
       - live_trader.env
   live_trader:
     build: src/
-    deploy:
-      restart_policy: #restart if database is not ready
-        condition: on-failure
-        delay: 10s
-        max_attempts: 15
-
     depends_on:
-      - db
+        database:
+            condition: service_healthy
     env_file:
       - live_trader.env
