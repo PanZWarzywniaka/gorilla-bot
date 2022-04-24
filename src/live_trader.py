@@ -11,7 +11,6 @@ class LiveTrader(Trader):
     def __init__(self,
                  dollars,
                  starting_quantity,
-                 rsi_threshold,
                  ticker,
                  interval,
                  historic_data_period
@@ -19,7 +18,6 @@ class LiveTrader(Trader):
         super().__init__(
             dollars,
             starting_quantity,
-            rsi_threshold,
             ticker,
             historic_data_period,
             interval)

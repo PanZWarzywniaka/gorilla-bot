@@ -5,6 +5,7 @@ import plotly.io as pio
 import numpy as np
 from models.trade import Trade
 from models.candlestick import Candlestick
+from os import environ
 
 
 class Visualizer:
@@ -13,7 +14,6 @@ class Visualizer:
         self.df = Candlestick.get_processed_candlesticks().loc[start:end]
         self.trades = Trade.load(start, end)
 
-        self.rsi_threshold = 30
         self.__set_layout()
         # initialize 3x1 figure
         self.fig = subplots.make_subplots(
@@ -103,7 +103,7 @@ class Visualizer:
         # RSI
         self.__scatter_line(row, col, '#52307c', "rsi")
         # RSI_threshold
-        self.fig.add_hline(y=self.rsi_threshold,
+        self.fig.add_hline(y=float(environ.get('RSI_THRESHOLD')),
                            line_color='#5230ff', row=3, col=1)
 
     def __set_layout(self):

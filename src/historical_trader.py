@@ -8,7 +8,6 @@ class HistoricalTrader(Trader):
     def __init__(self,
                  dollars,
                  starting_quantity,
-                 rsi_threshold,
                  ticker,
                  period,
                  interval,
@@ -16,7 +15,6 @@ class HistoricalTrader(Trader):
         super().__init__(
             dollars,
             starting_quantity,
-            rsi_threshold,
             ticker,
             period,
             interval)

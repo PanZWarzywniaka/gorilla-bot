@@ -12,7 +12,7 @@ def main():
     #     starting_quantity=0,
 
     #     # as percent of entry money
-    #     rsi_threshold=30,
+    #
 
     #     ticker=ticker,
     #     period="60d",
@@ -22,7 +22,7 @@ def main():
     # Visualizer()
 
     trader = LiveTrader(
-        dollars=100, starting_quantity=0, rsi_threshold=30,
+        dollars=100, starting_quantity=0,
         ticker=environ.get('TICKER'),
         interval=environ.get('INTERVAL'),
         historic_data_period=environ.get('PERIOD'),)

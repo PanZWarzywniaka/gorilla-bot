@@ -14,7 +14,6 @@ class Trader:
     def __init__(self,
                  dollars,
                  starting_quantity,
-                 rsi_threshold,
                  ticker,
                  period,
                  interval,
@@ -23,7 +22,6 @@ class Trader:
         # initialize variables
         self.dollars = dollars
         self.quantity = starting_quantity
-        self.rsi_threshold = rsi_threshold
 
         self.rsi_triggered = False
         self.current_trade = None
@@ -53,7 +51,7 @@ class Trader:
     def sell_all(self) -> bool: pass
 
     def rsi_signal(self) -> bool:
-        return self.candlestick['rsi'] < self.rsi_threshold
+        return self.candlestick['rsi'] <= float(environ.get('RSI_THRESHOLD'))
 
     def buy_signal(self) -> bool:
         c = self.candlestick
@@ -88,9 +86,6 @@ class Trader:
 
     def __can_sell(self) -> bool:
         return self.current_trade is not None  # we can sell, if we have open position
-
-    def make_charts(self, start: datetime = None, end: datetime = None):
-        Visualizer(self.data, self.rsi_threshold, start, end)
 
     def print_stats(self) -> None:
         Trade.print_stats()
