@@ -13,9 +13,6 @@ class Trader:
 
     def __init__(self,
                  dollars,
-                 ticker,
-                 period,
-                 interval,
                  ) -> None:
 
         # initialize variables
@@ -26,9 +23,6 @@ class Trader:
         self.current_trade = None
         # database work
         self.__create_tables()
-        print("Initilizing with historical data...")
-        Candlestick.update_db_with_new_candlesticks(
-            ticker=ticker, period=period, interval=interval)
 
     def take_action(self):
         # rsi signal

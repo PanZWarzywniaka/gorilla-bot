@@ -17,10 +17,14 @@ class HistoricalTrader(Trader):
             period,
             interval)
 
+        raw_data = Candlestick.download_yahoo_candlestics(
+            ticker=ticker, period=period, interval=interval)
+        self.data = Candlestick.process_candlesticks(raw_data)
+
         self.qty_increment_decimal_points = qty_increment_decimal_points
-        self.data = Candlestick.get_processed_candlesticks()
+
+        # start
         self.run_historical_simulation()
-        self.print_stats()
 
     def buy_all(self) -> bool:
 
@@ -58,6 +62,7 @@ class HistoricalTrader(Trader):
         self.candlestick = df.iloc[-1]  # last candle stick
         self.sell_all()
         print(f"MONEY: {self.dollars} $$$")
+        self.print_stats()
 
     # ensures that the quantity we want to buy (qty) is up to qty_increment_decimal_points
     def __round_quantity_down(self, qty: float) -> float:

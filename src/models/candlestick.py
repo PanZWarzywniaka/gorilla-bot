@@ -87,13 +87,13 @@ class Candlestick(BaseModel):
     @classmethod
     def update_db_with_new_candlesticks(cls, ticker, period, interval, start=None, end=None):
         # print("Updating database...")
-        df = cls.__download_yahoo_candlestics(
+        df = cls.download_yahoo_candlestics(
             ticker, period, interval, start, end)
 
         return cls.save(df)
 
     @staticmethod
-    def __download_yahoo_candlestics(ticker, period, interval, start=None, end=None, timeout=10) -> pd.DataFrame:
+    def download_yahoo_candlestics(ticker, period, interval, start=None, end=None, timeout=10) -> pd.DataFrame:
         ticker += "-USD"  # from "XXX" ticker symbol to "XXX-USD" required by yahoo
         for _ in range(timeout):
             try:

@@ -14,18 +14,18 @@ class LiveTrader(Trader):
                  interval,
                  historic_data_period
                  ) -> None:
-        super().__init__(
-            dollars,
-            ticker,
-            historic_data_period,
-            interval)
+        super().__init__(dollars)
+
+        print("Initilizing with historical data...")
+        Candlestick.update_db_with_new_candlesticks(
+            ticker=ticker, period=historic_data_period, interval=interval)
 
         self.ticker = ticker
         self.ticker_alpaca = ticker+"USD"  # from e.g "XXX" to "XXXUSD"
-        self.connector = AlpacaConnector()
         self.interval = interval
-        self.SLEEP_RATE = 10
+        self.SLEEP_RATE = 10  # secs
 
+        self.connector = AlpacaConnector()
         self.main_loop()
 
     def buy_all(self) -> bool:
@@ -90,7 +90,7 @@ class LiveTrader(Trader):
 
             updated = Candlestick.update_db_with_new_candlesticks(
                 self.ticker, "1d", self.interval,
-                start=datetime.datetime.now() - datetime.timedelta(minutes=15))
+                start=datetime.datetime.now() - datetime.timedelta(minutes=15))  # download cs from last 15mins
 
             if not updated:
                 continue
