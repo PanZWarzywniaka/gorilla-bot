@@ -2,7 +2,7 @@ version: "3.9"
 services:
 
   database:
-    image: mysql
+    image: x11tete11x/arm32v7-mysql:latest
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
     env_file:

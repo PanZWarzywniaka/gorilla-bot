@@ -1,4 +1,4 @@
-FROM python:latest
+FROM arm32v7/python:3.10
 
 RUN pip install pymysql \
     pandas \
@@ -6,8 +6,7 @@ RUN pip install pymysql \
     numpy \
     peewee \
     plotly \
-    yfinance \
-    cryptography
+    yfinance
 
 WORKDIR /opt/trading/src
 COPY . .

@@ -5,7 +5,7 @@ import math
 # owm
 from util.visualizer import Visualizer
 from models.trade import Trade
-from models.trade import Candlestick
+from models.candlestick import Candlestick
 from os import environ
 
 
