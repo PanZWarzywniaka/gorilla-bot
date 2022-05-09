@@ -17,6 +17,21 @@ class AlpacaConnector(BaseConnector):
             "time_in_force": "gtc",
         }
 
+    def request(self, verb: str, endpoint: str, params=None, json=None):
+        if json is None:
+            json = {}
+
+        if params is None:
+            params = {}
+
+        if verb.upper() == "GET":
+            return requests.get(environ.get('URL_BASE_ALPACA')+endpoint, headers=self.headers, params=params)
+
+        if verb.upper() == "POST":
+            return requests.post(environ.get('URL_BASE_ALPACA')+endpoint, headers=self.headers, json=json)
+
+        return None
+
     def place_buy_order(self, symbol: str, notional: float):
         data = {
             "symbol": symbol,
