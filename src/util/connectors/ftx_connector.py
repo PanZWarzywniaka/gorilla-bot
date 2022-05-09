@@ -38,7 +38,3 @@ class FTXConnector(BaseConnector):
         ask = float(result['ask'])
         bid = float(result['bid'])
         return (ask+bid)/2  # mid price
-
-
-f = FTXConnector()
-print(f.get_price())
