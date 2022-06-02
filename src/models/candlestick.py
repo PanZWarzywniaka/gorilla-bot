@@ -1,4 +1,4 @@
-from datetime import tzinfo
+import datetime
 import pytz
 from .base_model import BaseModel
 from util.processors.candlestick_processor import CandlestickProcessor
@@ -70,6 +70,19 @@ class Candlestick(BaseModel):
         df = pd.DataFrame(columns, index=[c.datetime for c in query])
         # print("Data loaded.")
         return df
+
+    @classmethod
+    def create_from_price(cls, price: float):
+        print(f"Creating new cs from price {price}")
+        cls.create(
+            datetime=datetime.datetime.now(),
+            open=price,
+            high=price,
+            low=price,
+            close=price,
+            adj_close=price,
+            volume=0,
+        )
 
     @staticmethod
     def process_candlesticks(df) -> pd.DataFrame:

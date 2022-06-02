@@ -4,6 +4,7 @@ from models.candlestick import Candlestick
 from trader import Trader
 from models.trade import Trade
 from util.connectors.alpaca_connector import AlpacaConnector
+from util.connectors.ftx_connector import FTXConnector
 from os import environ
 
 
@@ -22,10 +23,17 @@ class LiveTrader(Trader):
 
         self.ticker = ticker
         self.ticker_alpaca = ticker+"USD"  # from e.g "XXX" to "XXXUSD"
+        INTERVALS_IN_SECONDS = {
+            "1m": 60,
+            "5m": 300,
+            "15m": 900,
+        }
         self.interval = interval
+        self.interval_seconds = INTERVALS_IN_SECONDS[interval]
         self.SLEEP_RATE = 10  # secs
 
         self.connector = AlpacaConnector()
+        self.ftx_connector = FTXConnector()
         self.main_loop()
 
     def buy_all(self) -> bool:
@@ -85,23 +93,27 @@ class LiveTrader(Trader):
 
     def main_loop(self):
         print("Starting main loop")
+        print(f"Waiting for sync with {self.interval} interval")
+        time.sleep(self.interval_seconds - time.time() % self.interval_seconds)
+
         while True:
-            self.__sleep(self.SLEEP_RATE)
+            price = self.ftx_connector.get_price()
+            print(f"Downloaded new price {price}")
 
-            updated = Candlestick.update_db_with_new_candlesticks(
-                self.ticker, "1d", self.interval,
-                start=datetime.datetime.now() - datetime.timedelta(minutes=15))  # download cs from last 15mins
+            Candlestick.create_from_price(price)
+            print("Created new CS ")
 
-            if not updated:
-                continue
-
-            print("Got new candlestick!")
             self.data = Candlestick.get_processed_candlesticks()
             last_candlestick = self.data.reset_index().iloc[-1]
             self.candlestick = last_candlestick
             self.__print_last_candlestick(last_candlestick)
             self.take_action()
             self.print_stats()
+
+            print("Now sleeping")
+            # Lock loop to execute every interval
+            time.sleep(self.interval_seconds - time.time() %
+                       self.interval_seconds)
 
     def print_stats(self):
         super().print_stats()
