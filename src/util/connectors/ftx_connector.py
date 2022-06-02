@@ -4,7 +4,7 @@ from requests import Request
 import requests
 import hmac
 import time
-from base_connector import BaseConnector
+from util.connectors.base_connector import BaseConnector
 from os import environ
 
 
