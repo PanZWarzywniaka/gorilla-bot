@@ -4,7 +4,7 @@ from requests import Request
 import requests
 import hmac
 import time
-from base_connector import BaseConnector
+from util.connectors.base_connector import BaseConnector
 from os import environ
 
 
@@ -28,7 +28,13 @@ class FTXConnector(BaseConnector):
             'FTX-SIGN': signature,
             'FTX-TS': str(ts)
         }
-        return requests.get(url, headers=headers)
+        while True:
+            try:
+                return requests.get(url, headers=headers)
+            except Exception as err:
+                print(err)
+                print("Trying again in one second...")
+                time.sleep(1)
 
     def get_price(self) -> float:
         market_name = "BTC/USD"

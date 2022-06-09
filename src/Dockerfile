@@ -6,7 +6,8 @@ RUN pip install pymysql \
     numpy \
     peewee \
     plotly \
-    yfinance
+    yfinance \
+    pytz
 
 WORKDIR /opt/trading/src
 COPY . .
