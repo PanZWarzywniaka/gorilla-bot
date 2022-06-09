@@ -1,3 +1,4 @@
+from re import purge
 import time
 import datetime
 from models.candlestick import Candlestick
@@ -35,6 +36,31 @@ class LiveTrader(Trader):
         self.connector = AlpacaConnector()
         self.ftx_connector = FTXConnector()
         self.main_loop()
+
+    def main_loop(self):
+        print("Starting main loop", flush=True)
+        print(f"Waiting for sync with {self.interval} interval", flush=True)
+        time.sleep(self.interval_seconds - time.time() % self.interval_seconds)
+
+        while True:
+            print("Downloading new price")
+            price = self.ftx_connector.get_price()
+            print(f"Downloaded new price {price}")
+
+            Candlestick.create_from_price(price)
+            print("Created new CS ")
+
+            self.data = Candlestick.get_processed_candlesticks()
+            last_candlestick = self.data.reset_index().iloc[-1]
+            self.candlestick = last_candlestick
+            self.__print_last_candlestick(last_candlestick)
+            self.take_action()
+            self.print_stats()
+
+            print("Now sleeping")
+            # Lock loop to execute every interval
+            time.sleep(self.interval_seconds - time.time() %
+                       self.interval_seconds)
 
     def buy_all(self) -> bool:
         print(f"Buying asset for {self.dollars} USD")
@@ -90,30 +116,6 @@ class LiveTrader(Trader):
 
         self.reset_variables()
         return True
-
-    def main_loop(self):
-        print("Starting main loop")
-        print(f"Waiting for sync with {self.interval} interval")
-        time.sleep(self.interval_seconds - time.time() % self.interval_seconds)
-
-        while True:
-            price = self.ftx_connector.get_price()
-            print(f"Downloaded new price {price}")
-
-            Candlestick.create_from_price(price)
-            print("Created new CS ")
-
-            self.data = Candlestick.get_processed_candlesticks()
-            last_candlestick = self.data.reset_index().iloc[-1]
-            self.candlestick = last_candlestick
-            self.__print_last_candlestick(last_candlestick)
-            self.take_action()
-            self.print_stats()
-
-            print("Now sleeping")
-            # Lock loop to execute every interval
-            time.sleep(self.interval_seconds - time.time() %
-                       self.interval_seconds)
 
     def print_stats(self):
         super().print_stats()

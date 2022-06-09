@@ -19,7 +19,7 @@ class Candlestick(BaseModel):
     volume = FloatField(null=False, index=True)
 
     @classmethod
-    def save(cls, new: pd.DataFrame):
+    def save_multiple(cls, new: pd.DataFrame):
 
         def get_candlesticks_to_insert(existing: pd.DataFrame, new: pd.DataFrame) -> list:
 
@@ -74,7 +74,7 @@ class Candlestick(BaseModel):
     @classmethod
     def create_from_price(cls, price: float):
         print(f"Creating new cs from price {price}")
-        cls.create(
+        return cls.create(
             datetime=datetime.datetime.now(),
             open=price,
             high=price,
@@ -103,7 +103,7 @@ class Candlestick(BaseModel):
         df = cls.download_yahoo_candlestics(
             ticker, period, interval, start, end)
 
-        return cls.save(df)
+        return cls.save_multiple(df)
 
     @staticmethod
     def download_yahoo_candlestics(ticker, period, interval, start=None, end=None, timeout=10) -> pd.DataFrame:

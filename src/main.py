@@ -19,7 +19,6 @@ def main():
     #     qty_increment_decimal_points=4
     # )
     # Visualizer()
-
     trader = LiveTrader(
         dollars=100,
         ticker=environ.get('TICKER'),
