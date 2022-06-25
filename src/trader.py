@@ -2,8 +2,8 @@
 from abc import abstractmethod
 from datetime import datetime
 import math
-# owm
-from util.visualizer import Visualizer
+# own
+from util.logger import log_info
 from models.trade import Trade
 from models.candlestick import Candlestick
 from os import environ
@@ -85,15 +85,15 @@ class Trader:
         Candlestick.print_stats()
 
     def __clear_database(self):
-        print("Clearing db...")
+        log_info("Clearing db...")
 
         Trade.clear_table()
         Candlestick.clear_table()
 
-        print("Db cleared...")
+        log_info("Db cleared...")
 
     def __create_tables(self):
-        print("Creating tables...")
+        log_info("Creating tables...")
         Trade.create_table()
         Candlestick.create_table()
-        print("Tables created.")
+        log_info("Tables created.")

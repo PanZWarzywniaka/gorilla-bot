@@ -2,6 +2,7 @@ from datetime import datetime
 from peewee import FloatField, DateTimeField
 from models.base_model import BaseModel
 import pandas as pd
+from util.logger import log_info
 
 
 class Trade(BaseModel):
@@ -15,7 +16,7 @@ class Trade(BaseModel):
 
     @staticmethod
     def load(start: datetime = None, end: datetime = None) -> pd.DataFrame:
-        print("Loading trades...")
+        log_info("Loading trades...")
         query = Trade.select()
 
         if start:
@@ -33,7 +34,7 @@ class Trade(BaseModel):
         }
 
         df = pd.DataFrame(columns, index=[t.id for t in query])
-        print("Trades loaded.")
+        log_info("Trades loaded.")
         return df
 
     def __str__(self):
@@ -55,14 +56,14 @@ class Trade(BaseModel):
 
         result = 1
         for t in trades:
-            print(t, end='')
+            log_info(t)
             if t.sell_price:
                 t_yield = t.get_yield()
                 result *= t_yield
 
-                print(f"This trade yield: {t_yield} %")
+                log_info(f"This trade yield: {t_yield} %")
 
-        print(f"\nTOTAL Calculated profit: {result}")
+        log_info(f"\nTOTAL Calculated profit: {result}")
 
     @classmethod
     def get_last(cls):

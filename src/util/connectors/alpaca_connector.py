@@ -1,6 +1,7 @@
 import requests
 from util.connectors.base_connector import BaseConnector
 from os import environ
+from util.logger import log_info
 
 
 class AlpacaConnector(BaseConnector):
@@ -66,7 +67,7 @@ class AlpacaConnector(BaseConnector):
 
     def is_filled(self, order_id: str, timeout=100):
         for i in range(timeout):
-            print(f"Checking if it got filled for {i+1}. time")
+            log_info(f"Checking if it got filled for {i+1}. time")
             order_info = self.get_order(order_id).json()
             if order_info['filled_at']:
                 return order_info
@@ -82,7 +83,7 @@ class AlpacaConnector(BaseConnector):
         sell_req = self.place_sell_order(symbol, qty)
         if not sell_req.ok:
             return False
-        print("Placed sell order.")
+        log_info("Placed sell order.")
 
         order_id = sell_req.json()['id']
         order_info = self.is_filled(order_id)
@@ -92,7 +93,7 @@ class AlpacaConnector(BaseConnector):
         buy_req = self.place_buy_order(symbol, notional)
         if not buy_req.ok:
             return False
-        print("Placed buy order.")
+        log_info("Placed buy order.")
 
         order_id = buy_req.json()['id']
         order_info = self.is_filled(order_id)

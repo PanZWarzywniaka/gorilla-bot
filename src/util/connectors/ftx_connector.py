@@ -1,11 +1,10 @@
-from email import header
-import re
-from requests import Request
 import requests
 import hmac
 import time
 from util.connectors.base_connector import BaseConnector
 from os import environ
+from requests.adapters import HTTPAdapter
+from util.logger import log_info
 
 
 class FTXConnector(BaseConnector):
@@ -28,12 +27,13 @@ class FTXConnector(BaseConnector):
             'FTX-SIGN': signature,
             'FTX-TS': str(ts)
         }
+
         while True:
             try:
                 return requests.get(url, headers=headers)
-            except Exception as err:
-                print(err)
-                print("Trying again in one second...")
+            except requests.exceptions.ConnectionError:
+
+                log_info("Trying again in one second...")
                 time.sleep(1)
 
     def get_price(self) -> float:

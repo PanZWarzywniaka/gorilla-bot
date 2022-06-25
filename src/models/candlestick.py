@@ -2,6 +2,7 @@ import datetime
 import pytz
 from .base_model import BaseModel
 from util.processors.candlestick_processor import CandlestickProcessor
+from util.logger import log_info
 from peewee import DateTimeField, FloatField
 import pandas as pd
 import yfinance as yf
@@ -55,7 +56,7 @@ class Candlestick(BaseModel):
 
     @classmethod
     def load(cls) -> pd.DataFrame:
-        # print("Loading data...")
+        # log_info("Loading data...")
         query = cls.select()
 
         columns = {
@@ -68,12 +69,12 @@ class Candlestick(BaseModel):
         }
 
         df = pd.DataFrame(columns, index=[c.datetime for c in query])
-        # print("Data loaded.")
+        # log_info("Data loaded.")
         return df
 
     @classmethod
     def create_from_price(cls, price: float):
-        print(f"Creating new cs from price {price}")
+        log_info(f"Creating new cs from price {price}")
         return cls.create(
             datetime=datetime.datetime.now(),
             open=price,
@@ -99,7 +100,7 @@ class Candlestick(BaseModel):
 
     @classmethod
     def update_db_with_new_candlesticks(cls, ticker, period, interval, start=None, end=None):
-        # print("Updating database...")
+        # log_info("Updating database...")
         df = cls.download_yahoo_candlestics(
             ticker, period, interval, start, end)
 
@@ -151,6 +152,6 @@ class Candlestick(BaseModel):
         first_cs_datetime = cls.get_first().datetime
         last_cs_datetime = cls.get_last().datetime
 
-        print(f"First at: {first_cs_datetime}")
-        print(f"Last at: {last_cs_datetime}\n")
-        print(f"Covering: {last_cs_datetime-first_cs_datetime}\n")
+        log_info(f"First at: {first_cs_datetime}")
+        log_info(f"Last at: {last_cs_datetime}\n")
+        log_info(f"Covering: {last_cs_datetime-first_cs_datetime}\n")

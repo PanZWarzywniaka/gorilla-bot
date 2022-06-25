@@ -2,6 +2,7 @@ from abc import abstractmethod
 from peewee import MySQLDatabase
 from peewee import Model
 from os import environ
+from util.logger import log_info
 
 
 class BaseModel(Model):
@@ -21,8 +22,8 @@ class BaseModel(Model):
 
     @classmethod
     def print_stats(cls) -> None:
-        print(f"\n\nPrinting {cls.__name__}'s stats: \n")
-        print(f"There are {cls.count()} {cls.__name__.lower()}s \n")
+        log_info(f"\n\nPrinting {cls.__name__}'s stats: \n")
+        log_info(f"There are {cls.count()} {cls.__name__.lower()}s \n")
 
     @classmethod
     @abstractmethod

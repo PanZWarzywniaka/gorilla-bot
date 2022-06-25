@@ -7,3 +7,4 @@ peewee
 plotly
 yfinance
 pytz
+discord-logger
