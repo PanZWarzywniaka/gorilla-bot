@@ -44,7 +44,8 @@ class Trader:
     def sell_all(self) -> bool: pass
 
     def rsi_signal(self) -> bool:
-        return self.candlestick['rsi'] <= float(environ.get('RSI_THRESHOLD'))
+        return self.__can_buy() and \
+            self.candlestick['rsi'] <= float(environ.get('RSI_THRESHOLD'))
 
     def buy_signal(self) -> bool:
         c = self.candlestick
@@ -78,7 +79,8 @@ class Trader:
         return not self.current_trade  # we can buy, we don't have open position
 
     def __can_sell(self) -> bool:
-        return self.current_trade is not None  # we can sell, if we have open position
+        # we can sell, if we have open position
+        return bool(self.current_trade)
 
     def print_stats(self) -> None:
         Trade.print_stats()
