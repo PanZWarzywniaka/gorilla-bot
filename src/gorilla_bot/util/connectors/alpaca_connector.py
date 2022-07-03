@@ -1,7 +1,7 @@
 import requests
-from util.connectors.base_connector import BaseConnector
+from gorilla_bot.util.connectors.base_connector import BaseConnector
 from os import environ
-from util.logger import log_info
+from gorilla_bot.util.logger import log_info
 
 
 class AlpacaConnector(BaseConnector):

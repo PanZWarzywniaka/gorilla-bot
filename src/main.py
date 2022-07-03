@@ -1,6 +1,6 @@
-from historical_trader import HistoricalTrader
-from live_trader import LiveTrader
-from util.visualizer import Visualizer
+from gorilla_bot.historical_trader import HistoricalTrader
+from gorilla_bot.live_trader import LiveTrader
+from gorilla_bot.util.visualizer import Visualizer
 from os import environ
 
 

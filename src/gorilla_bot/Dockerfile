@@ -9,7 +9,7 @@ RUN pip install pymysql \
     yfinance \
     pytz
 
-WORKDIR /opt/trading/src
+WORKDIR /opt/trading/gorilla_bot
 COPY . .
 
 CMD ["python3", "./main.py"]

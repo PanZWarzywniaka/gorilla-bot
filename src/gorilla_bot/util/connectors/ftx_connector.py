@@ -1,10 +1,10 @@
 import requests
 import hmac
 import time
-from util.connectors.base_connector import BaseConnector
+from gorilla_bot.util.connectors.base_connector import BaseConnector
 from os import environ
 from requests.adapters import HTTPAdapter
-from util.logger import log_info
+from gorilla_bot.util.logger import log_info
 
 
 class FTXConnector(BaseConnector):

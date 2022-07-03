@@ -3,9 +3,9 @@ from abc import abstractmethod
 from datetime import datetime
 import math
 # own
-from util.logger import log_info
-from models.trade import Trade
-from models.candlestick import Candlestick
+from gorilla_bot.util.logger import log_info
+from gorilla_bot.models.trade import Trade
+from gorilla_bot.models.candlestick import Candlestick
 from os import environ
 
 
