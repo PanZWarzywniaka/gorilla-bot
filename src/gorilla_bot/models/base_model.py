@@ -2,7 +2,7 @@ from abc import abstractmethod
 from peewee import MySQLDatabase
 from peewee import Model
 from os import environ
-from util.logger import log_info
+from gorilla_bot.util.logger import log_info
 
 
 class BaseModel(Model):

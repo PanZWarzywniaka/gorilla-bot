@@ -1,6 +1,6 @@
-from models.candlestick import Candlestick
-from models.trade import Trade
-from trader import Trader
+from gorilla_bot.models.candlestick import Candlestick
+from gorilla_bot.models.trade import Trade
+from gorilla_bot.trader import Trader
 import math
 
 

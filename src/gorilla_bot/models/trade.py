@@ -1,8 +1,8 @@
 from datetime import datetime
 from peewee import FloatField, DateTimeField
-from models.base_model import BaseModel
+from gorilla_bot.models.base_model import BaseModel
 import pandas as pd
-from util.logger import log_info
+from gorilla_bot.util.logger import log_info
 
 
 class Trade(BaseModel):

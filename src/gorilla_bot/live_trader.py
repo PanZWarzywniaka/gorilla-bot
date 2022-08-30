@@ -1,12 +1,11 @@
-from re import purge
 import time
 import datetime
-from models.candlestick import Candlestick
-from trader import Trader
-from models.trade import Trade
-from util.connectors.alpaca_connector import AlpacaConnector
-from util.connectors.ftx_connector import FTXConnector
-from util.logger import log_info
+from gorilla_bot.models.candlestick import Candlestick
+from gorilla_bot.trader import Trader
+from gorilla_bot.models.trade import Trade
+from gorilla_bot.util.connectors.alpaca_connector import AlpacaConnector
+from gorilla_bot.util.connectors.ftx_connector import FTXConnector
+from gorilla_bot.util.logger import log_info
 from os import environ
 
 

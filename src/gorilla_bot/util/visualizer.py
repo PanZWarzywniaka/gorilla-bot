@@ -3,8 +3,8 @@ import plotly.subplots as subplots
 import plotly.graph_objects as go
 import plotly.io as pio
 import numpy as np
-from models.trade import Trade
-from models.candlestick import Candlestick
+from gorilla_bot.models.trade import Trade
+from gorilla_bot.models.candlestick import Candlestick
 from os import environ
 
 

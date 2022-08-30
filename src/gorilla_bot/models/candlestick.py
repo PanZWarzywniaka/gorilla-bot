@@ -1,8 +1,8 @@
 import datetime
 import pytz
 from .base_model import BaseModel
-from util.processors.candlestick_processor import CandlestickProcessor
-from util.logger import log_info
+from gorilla_bot.util.processors.candlestick_processor import CandlestickProcessor
+from gorilla_bot.util.logger import log_info
 from peewee import DateTimeField, FloatField
 import pandas as pd
 import yfinance as yf
