@@ -5,7 +5,7 @@ services:
     image: live_trader
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./live_trader.Dockerfile
     env_file:
       - live_trader.env
     command:

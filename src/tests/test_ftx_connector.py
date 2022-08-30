@@ -1,18 +1,8 @@
-
-import unittest
-import logging
 from gorilla_bot.util.connectors.ftx_connector import FTXConnector
+from tests.gorilla_test_case import GorillaTestCase
 
 
-class FTXConnectorTestCase(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        logging.disable(logging.CRITICAL)
-
-    @classmethod
-    def tearDownClass(cls):
-        logging.disable(logging.NOTSET)
+class FTXConnectorTestCase(GorillaTestCase):
 
     def setUp(self):
         self.ftx_connector = FTXConnector()

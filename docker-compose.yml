@@ -5,7 +5,7 @@ services:
     image: live_trader
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./live_trader.Dockerfile
     env_file:
       - live_trader.env
     depends_on:
@@ -18,3 +18,15 @@ services:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
     env_file:
       - live_trader.env
+
+  #testing
+  tester:
+    image: tester
+    build:
+      context: .
+      dockerfile: ./tester.Dockerfile
+    env_file:
+      - live_trader.env
+    depends_on:
+      database:
+        condition: service_healthy
